@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Stadion;
+use Illuminate\Support\Facades\Storage;
 
 class StadionController extends Controller
 {
@@ -27,14 +28,23 @@ class StadionController extends Controller
             'nama' => 'required|string|max:255',
             'lokasi' => 'required|string|max:255',
             'kapasitas' => 'required|integer|min:0',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // max 2MB
         ]);
 
-        Stadion::create([
+        $data = [
             'nama' => $request->nama,
             'lokasi' => $request->lokasi,
             'kapasitas' => $request->kapasitas,
             'status' => 0, // Default status "Menunggu"
-        ]);
+        ];
+
+        // Handle upload foto jika ada
+        if ($request->hasFile('foto')) {
+            $path = $request->file('foto')->store('stadion_foto', 'public');
+            $data['foto'] = $path;
+        }
+
+        Stadion::create($data);
 
         return redirect()->route('stadion.index')->with('success', 'Stadion berhasil ditambahkan');
     }
@@ -53,14 +63,29 @@ class StadionController extends Controller
             'nama' => 'required|string|max:255',
             'lokasi' => 'required|string|max:255',
             'kapasitas' => 'required|integer|min:0',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $stadion = Stadion::findOrFail($id);
-        $stadion->update([
+
+        $data = [
             'nama' => $request->nama,
             'lokasi' => $request->lokasi,
             'kapasitas' => $request->kapasitas,
-        ]);
+        ];
+
+        // Handle upload foto baru dan hapus foto lama jika ada
+        if ($request->hasFile('foto')) {
+            // Hapus foto lama jika ada
+            if ($stadion->foto && Storage::disk('public')->exists($stadion->foto)) {
+                Storage::disk('public')->delete($stadion->foto);
+            }
+
+            $path = $request->file('foto')->store('stadion_foto', 'public');
+            $data['foto'] = $path;
+        }
+
+        $stadion->update($data);
 
         return redirect()->route('stadion.index')->with('success', 'Data stadion berhasil diupdate');
     }
@@ -69,6 +94,12 @@ class StadionController extends Controller
     public function destroy($id)
     {
         $stadion = Stadion::findOrFail($id);
+
+        // Hapus file foto jika ada
+        if ($stadion->foto && Storage::disk('public')->exists($stadion->foto)) {
+            Storage::disk('public')->delete($stadion->foto);
+        }
+
         $stadion->delete();
 
         return redirect()->route('stadion.index')->with('success', 'Data stadion berhasil dihapus');
@@ -77,7 +108,6 @@ class StadionController extends Controller
     // Update status stadion (0=Menunggu, 1=Disetujui, 2=Selesai, 3=Ditolak)
     public function updateStatus($id, $status)
     {
-        // Validasi status harus integer dan salah satu dari 0,1,2,3
         $validStatus = [0, 1, 2, 3];
 
         if (!in_array((int)$status, $validStatus, true)) {

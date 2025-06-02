@@ -9,8 +9,9 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <form method="POST" action="{{ route('stadion.store') }}">
+                    <form method="POST" action="{{ route('stadion.store') }}" enctype="multipart/form-data">
                         @csrf
+
                         <!-- Nama stadion -->
                         <div class="mb-6">
                             <x-input-label for="nama" :value="__('Nama')" />
@@ -56,6 +57,25 @@
                                 value="{{ old('kapasitas') }}"
                             />
                             <x-input-error class="mt-2" :messages="$errors->get('kapasitas')" />
+                        </div>
+
+                        <!-- Foto stadion -->
+                        <div class="mb-6">
+                            <x-input-label for="foto" :value="__('Foto Stadion')" />
+                            <input
+                                id="foto"
+                                name="foto"
+                                type="file"
+                                accept="image/*"
+                                class="block w-full mt-1 text-sm text-gray-900
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-md file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-indigo-50 file:text-indigo-700
+                                hover:file:bg-indigo-100
+                                dark:text-gray-100"
+                            />
+                            <x-input-error class="mt-2" :messages="$errors->get('foto')" />
                         </div>
 
                         <div class="flex items-center gap-4">

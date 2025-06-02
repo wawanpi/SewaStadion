@@ -36,7 +36,10 @@
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class="text-sm text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th scope="col" class="px-6 py-3">Nama Stadion</th>
+                                <th scope="col" class="px-6 py-3">Nama Fasilitas</th>
+                                <th scope="col" class="px-6 py-3">Lokasi</th>
+                                <th scope="col" class="px-6 py-3">Kapasitas</th>
+                                <th scope="col" class="px-6 py-3">Foto</th> <!-- Tambahkan kolom foto -->
                                 <th scope="col" class="px-6 py-3">Status</th>
                                 <th scope="col" class="px-6 py-3">Aksi</th>
                             </tr>
@@ -48,6 +51,21 @@
                                         <a href="{{ route('stadion.edit', $data) }}" class="hover:underline text-xs">
                                             {{ $data->nama }}
                                         </a>
+                                    </td>
+                                    <td class="px-6 py-4 text-xs text-gray-700 dark:text-gray-300">
+                                        {{ $data->lokasi }}
+                                    </td>
+                                    <td class="px-6 py-4 text-xs text-gray-700 dark:text-gray-300">
+                                        {{ $data->kapasitas }}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        @if ($data->foto)
+                                            <img src="{{ asset('storage/stadion/' . $data->foto) }}"
+                                                 alt="Foto {{ $data->nama }}"
+                                                 class="w-20 h-14 object-cover rounded">
+                                        @else
+                                            <span class="text-xs text-gray-400">Tidak ada foto</span>
+                                        @endif
                                     </td>
                                     <td class="px-6 py-4">
                                         @switch($data->status)
@@ -79,7 +97,7 @@
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex gap-4">
-                                            @if ($data->status == 0) {{-- Menunggu --}}
+                                            @if ($data->status == 0)
                                                 <form action="{{ route('stadion.updateStatus', ['stadion' => $data->id, 'status' => 1]) }}" method="POST">
                                                     @csrf
                                                     @method('PATCH')
@@ -94,7 +112,7 @@
                                                         Tolak
                                                     </button>
                                                 </form>
-                                            @elseif ($data->status == 1) {{-- Setuju --}}
+                                            @elseif ($data->status == 1)
                                                 <form action="{{ route('stadion.updateStatus', ['stadion' => $data->id, 'status' => 3]) }}" method="POST">
                                                     @csrf
                                                     @method('PATCH')
@@ -102,7 +120,7 @@
                                                         Tandai Selesai
                                                     </button>
                                                 </form>
-                                            @elseif ($data->status == 2) {{-- Ditolak --}}
+                                            @elseif ($data->status == 2)
                                                 <form action="{{ route('stadion.updateStatus', ['stadion' => $data->id, 'status' => 0]) }}" method="POST">
                                                     @csrf
                                                     @method('PATCH')
@@ -110,7 +128,7 @@
                                                         Kembali ke Menunggu
                                                     </button>
                                                 </form>
-                                            @elseif ($data->status == 3) {{-- Selesai --}}
+                                            @elseif ($data->status == 3)
                                                 <span class="text-gray-500 text-xs">Tidak ada aksi</span>
                                             @endif
 
@@ -126,7 +144,7 @@
                                 </tr>
                             @empty
                                 <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                                    <td colspan="3" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                                    <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                                         Data tidak tersedia
                                     </td>
                                 </tr>

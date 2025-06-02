@@ -21,8 +21,9 @@ class Stadion extends Model
         'status',  // tambah ini
 
     ];
-        public function user()
+    public function user()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsTo(User::class);
     }
+
 }
