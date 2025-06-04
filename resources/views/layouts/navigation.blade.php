@@ -26,6 +26,10 @@
                          {{ __('User') }}
                      </x-nav-link>
                  </div>
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                     <x-nav-link :href="route('penyewaan-stadion.index')" :active="request()->routeIs('penyewaan-stadion.index')">
+                         {{ __('Daftar Penyewaan Stadion') }}
+                     </x-nav-link>
             </div>
 
             <!-- Settings Dropdown -->

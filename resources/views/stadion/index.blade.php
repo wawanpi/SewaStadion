@@ -37,7 +37,7 @@
                         <thead class="text-sm text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-6 py-3">Nama Fasilitas</th>
-                                <th scope="col" class="px-6 py-3">Lokasi</th>
+                                <th scope="col" class="px-6 py-3">Deskripsi</th>
                                 <th scope="col" class="px-6 py-3">Kapasitas</th>
                                 <th scope="col" class="px-6 py-3">Foto</th> <!-- Tambahkan kolom foto -->
                                 <th scope="col" class="px-6 py-3">Status</th>

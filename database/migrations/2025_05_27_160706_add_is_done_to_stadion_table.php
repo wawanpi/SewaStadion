@@ -9,16 +9,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('stadion', function (Blueprint $table) {
-            $table->dropColumn('is_done'); // hapus kolom lama
-            $table->string('status')->default('menunggu'); // kolom status dengan default 'menunggu'
+            // Tambah kolom is_done dengan default false
+            if (!Schema::hasColumn('stadion', 'is_done')) {
+                $table->boolean('is_done')->default(false);
+            }
         });
-
     }
 
     public function down(): void
     {
         Schema::table('stadion', function (Blueprint $table) {
-            $table->dropColumn('is_done');
+            if (Schema::hasColumn('stadion', 'is_done')) {
+                $table->dropColumn('is_done');
+            }
         });
     }
 };

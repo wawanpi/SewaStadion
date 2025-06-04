@@ -49,4 +49,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Stadion::class);
     }
+    public function penyewaan()
+{
+    return $this->hasMany(PenyewaanStadion::class);
+}
+
 }
