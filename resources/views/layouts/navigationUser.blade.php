@@ -1,5 +1,4 @@
 <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
-    <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
@@ -14,29 +13,12 @@
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
+                    </x-nav-link>>
+                    <x-nav-link :href="route('penyewaan-stadion.User.LihatJadwal')" :active="request()->routeIs('penyewaan-stadion.index')">
+                        {{ __('Lihat Jadwal') }}
                     </x-nav-link>
                 </div>
-
-                @auth
-                    @if(Auth::user()->role === 'admin')
-                        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                            <x-nav-link :href="route('stadion.index')" :active="request()->routeIs('stadion.index')">
-                                {{ __('Stadion') }}
-                            </x-nav-link>
-                        </div>
-                        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                            <x-nav-link :href="route('user.index')" :active="request()->routeIs('user.index')">
-                                {{ __('User') }}
-                            </x-nav-link>
-                        </div>
-                        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                            <x-nav-link :href="route('penyewaan-stadion.index')" :active="request()->routeIs('penyewaan-stadion.index')">
-                                {{ __('Daftar Penyewaan Stadion') }}
-                            </x-nav-link>
-                        </div>
-                    @endif
-                @endauth
-            </div> <!-- Penutup .flex -->
+            </div>
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -57,7 +39,6 @@
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
-                        <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <x-dropdown-link :href="route('logout')"
@@ -87,28 +68,10 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('penyewaan-stadion.index')" :active="request()->routeIs('penyewaan-stadion.index')">
+                {{ __('Daftar Penyewaan Stadion') }}
+            </x-responsive-nav-link>
         </div>
-
-        @auth
-            @if(Auth::user()->role === 'admin')
-                <div class="pt-2 pb-3 space-y-1">
-                    <x-responsive-nav-link :href="route('stadion.index')" :active="request()->routeIs('stadion.index')">
-                        {{ __('Stadion') }}
-                    </x-responsive-nav-link>
-                </div>
-                <div class="pt-2 pb-3 space-y-1">
-                    <x-responsive-nav-link :href="route('user.index')" :active="request()->routeIs('user.index')">
-                        {{ __('User') }}
-                    </x-responsive-nav-link>
-                </div>
-            @endif
-
-            <div class="pt-2 pb-3 space-y-1">
-                <x-responsive-nav-link :href="route('penyewaan-stadion.index')" :active="request()->routeIs('penyewaan-stadion.index')">
-                    {{ __('Daftar Penyewaan Stadion') }}
-                </x-responsive-nav-link>
-            </div>
-        @endauth
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
@@ -122,7 +85,6 @@
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
 
-                <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <x-responsive-nav-link :href="route('logout')"

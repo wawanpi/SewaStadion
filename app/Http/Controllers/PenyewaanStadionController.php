@@ -11,30 +11,34 @@ use Carbon\Carbon;
 
 class PenyewaanStadionController extends Controller
 {
+    // Definisikan slot waktu sebagai konstanta agar lebih jelas
+    private const SLOT_WAKTU = [
+        1 => ['start' => '06:00', 'end' => '12:00'],
+        2 => ['start' => '13:00', 'end' => '18:00'],
+        3 => ['start' => '00:00', 'end' => '23:59:59'], // Full day
+    ];
+
     public function index()
     {
-        $penyewaanStadions = PenyewaanStadion::with('stadion', 'user')->get();
-
-        return view('penyewaan-stadion.index', compact('penyewaanStadions'));
+        $penyewaanStadions = PenyewaanStadion::with(['stadion', 'user'])->get();
+        return view('penyewaan-stadion.Admin.Adminindex', compact('penyewaanStadions'));
     }
 
-    // Tampilkan form booking untuk stadion tertentu
     public function create()
     {
-        $stadion = Stadion::all(); // ambil semua stadion
-        return view('penyewaan-stadion.create', compact('stadion'));
+        $stadions = Stadion::all();
+        return view('penyewaan-stadion.create', compact('stadions'));
     }
 
-    // Simpan data booking baru
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'stadion_id' => 'required|exists:stadion,id',
             'tanggal_sewa' => 'required|date|after_or_equal:today',
             'durasi' => 'required|integer|min:1',
             'slot_waktu' => 'required|in:1,2,3',
             'catatan_tambahan' => 'nullable|string',
-            'bukti_pembayaran' => 'nullable|mimes:jpg,jpeg,png,gif,webp,pdf|max:5120',
+            'bukti_pembayaran' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp,pdf|max:5120',
         ], [
             'tanggal_sewa.after_or_equal' => 'Tanggal sewa harus hari ini atau setelahnya.',
             'bukti_pembayaran.mimes' => 'File bukti pembayaran harus berupa gambar atau PDF.',
@@ -42,21 +46,17 @@ class PenyewaanStadionController extends Controller
             'slot_waktu.in' => 'Slot waktu tidak valid.',
         ]);
 
-        // Cek jadwal bentrok
-        if ($this->isJadwalBentrok($request->stadion_id, $request->tanggal_sewa, $request->slot_waktu)) {
+        if ($this->isJadwalBentrok($validated['stadion_id'], $validated['tanggal_sewa'], $validated['slot_waktu'])) {
             return redirect()->back()->withInput()->withErrors(['tanggal_sewa' => 'Jadwal untuk stadion dan slot waktu ini sudah dipesan.']);
         }
 
-        $data = $request->only(['stadion_id', 'tanggal_sewa', 'durasi', 'catatan_tambahan', 'slot_waktu']);
+        $data = $validated;
         $data['user_id'] = Auth::id();
         $data['status'] = 'Menunggu';
-
-        // Hitung waktu_selesai berdasarkan slot_waktu dan durasi
         $data['waktu_selesai'] = $this->hitungWaktuSelesai($data['tanggal_sewa'], $data['slot_waktu'], $data['durasi']);
 
         if ($request->hasFile('bukti_pembayaran')) {
-            $path = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
-            $data['bukti_pembayaran'] = $path;
+            $data['bukti_pembayaran'] = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
         }
 
         PenyewaanStadion::create($data);
@@ -64,51 +64,42 @@ class PenyewaanStadionController extends Controller
         return redirect()->route('penyewaan-stadion.my')->with('success', 'Booking berhasil dibuat, silakan tunggu persetujuan admin.');
     }
 
-    // Tampilkan daftar booking user yang login
     public function myBookings()
     {
-        $user = Auth::user();
-        $bookings = PenyewaanStadion::where('user_id', $user->id)
+        $bookings = PenyewaanStadion::where('user_id', Auth::id())
             ->with('stadion')
-            ->orderBy('created_at', 'desc')
+            ->orderByDesc('created_at')
             ->get();
 
         return view('penyewaan-stadion.my_bookings', compact('bookings'));
     }
 
-    // Halaman admin lihat semua booking
+    // Tambahkan middleware atau pengecekan admin sebelum akses adminIndex
     public function adminIndex()
     {
         $penyewaanStadions = PenyewaanStadion::with(['user', 'stadion'])
-            ->orderBy('created_at', 'desc')
+            ->orderByDesc('created_at')
             ->get();
 
         return view('admin.bookings.index', compact('penyewaanStadions'));
     }
 
-    // Admin setujui booking
     public function approve(PenyewaanStadion $booking)
     {
-        $booking->status = 'Diterima';
-        $booking->save();
-
+        $booking->update(['status' => 'Diterima']);
         return redirect()->back()->with('success', 'Booking berhasil disetujui.');
     }
 
-    // Admin tolak booking
     public function reject(PenyewaanStadion $booking)
     {
-        $booking->status = 'Ditolak';
-        $booking->save();
-
+        $booking->update(['status' => 'Ditolak']);
         return redirect()->back()->with('success', 'Booking berhasil ditolak.');
     }
 
-    // Upload ulang bukti pembayaran user
     public function uploadBuktiPembayaran(Request $request, PenyewaanStadion $booking)
     {
         $request->validate([
-            'bukti_pembayaran' => 'required|mimes:jpg,jpeg,png,gif,webp,pdf|max:5120',
+            'bukti_pembayaran' => 'required|file|mimes:jpg,jpeg,png,gif,webp,pdf|max:5120',
         ], [
             'bukti_pembayaran.required' => 'Bukti pembayaran wajib diupload.',
             'bukti_pembayaran.mimes' => 'File harus berupa gambar atau PDF.',
@@ -120,13 +111,12 @@ class PenyewaanStadionController extends Controller
         }
 
         if ($request->hasFile('bukti_pembayaran')) {
-            if ($booking->bukti_pembayaran) {
+            if ($booking->bukti_pembayaran && Storage::disk('public')->exists($booking->bukti_pembayaran)) {
                 Storage::disk('public')->delete($booking->bukti_pembayaran);
             }
 
             $path = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
-            $booking->bukti_pembayaran = $path;
-            $booking->save();
+            $booking->update(['bukti_pembayaran' => $path]);
 
             return redirect()->back()->with('success', 'Bukti pembayaran berhasil diupload.');
         }
@@ -134,8 +124,7 @@ class PenyewaanStadionController extends Controller
         return redirect()->back()->with('error', 'Tidak ada file yang diupload.');
     }
 
-    // Fungsi private untuk cek jadwal bentrok
-    private function isJadwalBentrok($stadionId, $tanggalSewa, $slotWaktu)
+    private function isJadwalBentrok(int $stadionId, string $tanggalSewa, int $slotWaktu): bool
     {
         return PenyewaanStadion::where('stadion_id', $stadionId)
             ->where('tanggal_sewa', $tanggalSewa)
@@ -144,54 +133,50 @@ class PenyewaanStadionController extends Controller
             ->exists();
     }
 
-    // Fungsi private untuk hitung waktu selesai berdasarkan slot_waktu dan durasi
-    private function hitungWaktuSelesai($tanggalSewa, $slotWaktu, $durasi)
+    private function hitungWaktuSelesai(string $tanggalSewa, int $slotWaktu, int $durasi): Carbon
     {
         $start = Carbon::parse($tanggalSewa);
 
-        switch ($slotWaktu) {
-            case 1: // pagi sampai siang (6:00 - 12:00)
-                $start->setTime(6, 0, 0);
-                $jamSelesai = 12;
-                break;
-            case 2: // siang sampai sore (13:00 - 18:00)
-                $start->setTime(13, 0, 0);
-                $jamSelesai = 18;
-                break;
-            case 3: // full day (24 jam)
-                $start->setTime(0, 0, 0);
-                $jamSelesai = 24;
-                break;
-            default:
-                $start->setTime(6, 0, 0);
-                $jamSelesai = 12;
+        if (!isset(self::SLOT_WAKTU[$slotWaktu])) {
+            // default slot pagi
+            $slotWaktu = 1;
         }
 
-        if ($slotWaktu == 3) {
-            // full day, durasi 1 = 24 jam, durasi 2 = 48 jam, dst
+        $slot = self::SLOT_WAKTU[$slotWaktu];
+        [$startTime, $endTime] = [$slot['start'], $slot['end']];
+
+        $start->setTimeFromTimeString($startTime);
+
+        if ($slotWaktu === 3) {
+            // full day, durasi * 24 jam
             return $start->copy()->addHours(24 * $durasi);
         } else {
+            $batasSelesai = Carbon::parse($tanggalSewa . ' ' . $endTime);
             $end = $start->copy()->addHours($durasi);
-            $batasSelesai = $start->copy()->setTime($jamSelesai, 0, 0);
-            if ($end->greaterThan($batasSelesai)) {
-                $end = $batasSelesai;
-            }
-            return $end;
+
+            return $end->lessThanOrEqualTo($batasSelesai) ? $end : $batasSelesai;
         }
     }
 
-    // Tambahan: Update status booking (Admin)
-    public function updateStatus(Request $request, PenyewaanStadion $booking, $status)
+    public function updateStatus(Request $request, PenyewaanStadion $booking, string $status)
     {
         $allowedStatuses = ['Menunggu', 'Diterima', 'Ditolak', 'Selesai'];
 
         if (!in_array($status, $allowedStatuses)) {
-            return redirect()->back()->with('danger', 'Status tidak valid.');
+            return redirect()->back()->with('error', 'Status tidak valid.');
         }
 
-        $booking->status = $status;
-        $booking->save();
+        $booking->update(['status' => $status]);
 
         return redirect()->back()->with('success', 'Status booking berhasil diperbarui.');
     }
+
+    public function lihatJadwal()
+{
+    // Ambil semua data penyewaan stadion dengan relasi user dan stadion
+    $jadwals = PenyewaanStadion::with('stadion', 'user')->get();
+
+    // Tampilkan view khusus untuk user lihat jadwal, pastikan file blade ada di resources/views/penyewaan-stadion/user/lihatjadwal.blade.php
+    return view('penyewaan-stadion.user.lihatjadwal', compact('jadwals'));
+}
 }

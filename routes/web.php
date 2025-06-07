@@ -27,6 +27,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/penyewaan-stadion', [PenyewaanStadionController::class, 'store'])->name('penyewaan-stadion.store');
     Route::get('/penyewaan-stadion/my-bookings', [PenyewaanStadionController::class, 'myBookings'])->name('penyewaan-stadion.my');
     Route::delete('/penyewaan-stadion/{penyewaan}', [PenyewaanStadionController::class, 'destroy'])->name('penyewaan-stadion.destroy');
+    Route::get('/penyewaan-stadion/lihat-jadwal', [PenyewaanStadionController::class, 'lihatJadwal'])->name('penyewaan-stadion.User.LihatJadwal');
+
 });
 
 // Route khusus admin (harus login dan admin)
@@ -44,7 +46,7 @@ Route::middleware('admin')->group(function  () {
     Route::patch('/admin/penyewaan-stadion/{booking}/reject', [PenyewaanStadionController::class, 'reject'])->name('admin.penyewaan.reject');
 
     // Penyewaan stadion managemnt
-    Route::get('/penyewaan-stadion', [PenyewaanStadionController::class, 'index'])->name('penyewaan-stadion.index');
+    Route::get('/daftar-penyewaan-stadion', [PenyewaanStadionController::class, 'index'])->name('penyewaan-stadion.index');
 
     
 });

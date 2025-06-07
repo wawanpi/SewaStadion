@@ -16,7 +16,18 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            @include('layouts.navigation')
+            
+            {{-- Menentukan navigasi berdasarkan role --}}
+            @auth
+                @if(Auth::user()->role === 'admin')
+                    @include('layouts.navigationAdmin')
+                @else
+                    @include('layouts.navigationUser')
+                @endif
+            @else
+                {{-- Jika tidak login, tampilkan navigasi guest jika ada --}}
+                {{-- @include('layouts.navigationUser') --}}
+            @endauth
 
             <!-- Page Heading -->
             @isset($header)
