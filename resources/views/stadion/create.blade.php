@@ -43,20 +43,17 @@
                             <x-input-error class="mt-2" :messages="$errors->get('lokasi')" />
                         </div>
 
-                        <!-- Kapasitas stadion -->
+                        <!-- Deskripsi stadion (ditambahkan) -->
                         <div class="mb-6">
-                            <x-input-label for="kapasitas" :value="__('Kapasitas')" />
-                            <x-text-input
-                                id="kapasitas"
-                                name="kapasitas"
-                                type="number"
-                                min="0"
-                                class="block w-full mt-1"
+                            <x-input-label for="deskripsi" :value="__('Deskripsi')" />
+                            <textarea
+                                id="deskripsi"
+                                name="deskripsi"
+                                rows="3"
+                                class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-100"
                                 required
-                                autocomplete="kapasitas"
-                                value="{{ old('kapasitas') }}"
-                            />
-                            <x-input-error class="mt-2" :messages="$errors->get('kapasitas')" />
+                            >{{ old('deskripsi') }}</textarea>
+                            <x-input-error class="mt-2" :messages="$errors->get('deskripsi')" />
                         </div>
 
                         <!-- Foto stadion -->

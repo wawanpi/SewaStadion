@@ -11,7 +11,7 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <h2 class="text-lg font-semibold mb-4">{{ __('Edit Data Stadion') }}</h2>
 
-                    <form method="POST" action="{{ route('stadion.update', $stadion->id) }}">
+                    <form method="POST" action="{{ route('stadion.update', $stadion->id) }}" enctype="multipart/form-data">
                         @csrf
                         @method('PATCH')
 
@@ -46,19 +46,36 @@
                             <x-input-error class="mt-2" :messages="$errors->get('lokasi')" />
                         </div>
 
-                        <!-- Kapasitas -->
-                        <div class="mb-6">
-                            <x-input-label for="kapasitas" :value="__('Kapasitas')" />
-                            <x-text-input 
-                                id="kapasitas" 
-                                name="kapasitas" 
-                                type="number" 
+                        <!-- Deskripsi Stadion -->
+                        <div class="mb-4">
+                            <x-input-label for="deskripsi" :value="__('Deskripsi')" />
+                            <textarea 
+                                id="deskripsi" 
+                                name="deskripsi" 
+                                rows="4" 
+                                class="mt-1 block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                                required
+                            >{{ old('deskripsi', $stadion->deskripsi) }}</textarea>
+                            <x-input-error class="mt-2" :messages="$errors->get('deskripsi')" />
+                        </div>
+
+                        <!-- Foto Stadion (upload baru) -->
+                        <div class="mb-4">
+                            <x-input-label for="foto" :value="__('Foto Stadion (opsional)')" />
+                            <input 
+                                id="foto" 
+                                name="foto" 
+                                type="file" 
+                                accept="image/*" 
                                 class="mt-1 block w-full"
-                                :value="old('kapasitas', $stadion->kapasitas)" 
-                                required 
-                                autocomplete="kapasitas" 
                             />
-                            <x-input-error class="mt-2" :messages="$errors->get('kapasitas')" />
+                            <x-input-error class="mt-2" :messages="$errors->get('foto')" />
+
+                            @if($stadion->foto)
+                                <div class="mt-2">
+                                    <img src="{{ asset('storage/' . $stadion->foto) }}" alt="Foto Stadion" class="w-40 h-auto rounded">
+                                </div>
+                            @endif
                         </div>
 
                         <!-- Tombol Simpan dan Batal -->
