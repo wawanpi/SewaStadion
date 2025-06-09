@@ -26,8 +26,13 @@ class Stadion extends Model
         return $this->belongsTo(User::class);
     }
     public function penyewaan()
-{
-    return $this->hasMany(PenyewaanStadion::class);
-}
+    {
+        return $this->hasMany(PenyewaanStadion::class);
+    }
+    public function hargaSewa()
+    {
+        return $this->hasMany(HargaSewa::class);
+    }
+
 
 }

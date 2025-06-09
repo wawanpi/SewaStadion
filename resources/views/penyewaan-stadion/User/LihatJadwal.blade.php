@@ -1,4 +1,5 @@
-@extends('layouts.app')
+<x-app-layout>
+
 
 @section('content')
 <div class="container mx-auto px-4 py-6">
@@ -57,4 +58,4 @@
         </div>
     @endif
 </div>
-@endsection
+</x-app-layout>

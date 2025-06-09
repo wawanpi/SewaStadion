@@ -21,8 +21,12 @@
                         {{ __('User') }}
                     </x-nav-link>
                     <x-nav-link :href="route('penyewaan-stadion.index')" :active="request()->routeIs('penyewaan-stadion.index')">
-                        {{ __('Daftar Penyewaan ') }}
+                        {{ __('Daftar Penyewa ') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('harga-sewa.index')" :active="request()->routeIs('harga-sewa.index')">
+                        {{ __('Kelola Harga Sewa') }}
+                    </x-nav-link>
+
                 </div>
             </div>
 
