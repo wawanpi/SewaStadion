@@ -122,5 +122,20 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+'aliases' => [
+    'App'       => Illuminate\Support\Facades\App::class,
+    'Arr'       => Illuminate\Support\Arr::class,
+    'Auth'      => Illuminate\Support\Facades\Auth::class,
+    'Blade'     => Illuminate\Support\Facades\Blade::class,
+    'Config'    => Illuminate\Support\Facades\Config::class,
+    'DB'        => Illuminate\Support\Facades\DB::class,
+    'File'      => Illuminate\Support\Facades\File::class,
+    'Log'       => Illuminate\Support\Facades\Log::class,
+    'PDF'       => Barryvdh\DomPDF\Facade\Pdf::class, // <- Kalau pakai DomPDF juga
+    'Route'     => Illuminate\Support\Facades\Route::class,
+    'Storage'   => Illuminate\Support\Facades\Storage::class,
+    // dan seterusnya...
+],
+
 
 ];

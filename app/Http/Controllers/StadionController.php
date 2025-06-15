@@ -128,4 +128,10 @@ class StadionController extends Controller
         return redirect()->route('stadion.index')->with('success', $messages[$status]);
     }
     */
+    public function showDashboard()
+    {
+        $stadions = Stadion::latest()->get(); // ambil semua data stadion dari database
+        return view('dashboard', compact('stadions'));
+    }
+
 }

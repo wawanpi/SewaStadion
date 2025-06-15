@@ -6,14 +6,16 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PenyewaanStadionController;
 use App\Http\Controllers\HargaSewaController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TiketController; 
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [StadionController::class, 'showDashboard'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+
 
 // Route untuk user yang sudah login dengan prefix 'dashboard'
 Route::middleware(['auth'])->prefix('dashboard')->group(function () {
@@ -32,6 +34,9 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     // **Tambahan route AJAX untuk hitung harga sewa**
     // routes/web.php
     Route::post('/penyewaan-stadion/hitung-harga', [PenyewaanStadionController::class, 'hitungHargaTotal'])->name('penyewaan-stadion.hitung-harga');
+
+    Route::get('/tiket/{id}/pdf', [TiketController::class, 'downloadTiket'])->name('tiket.download');
+
 });
 
 // Route khusus admin (harus login dan admin)
@@ -55,5 +60,6 @@ Route::middleware(['auth', 'admin'])->prefix('dashboard')->group(function () {
     Route::get('/daftar-penyewaan-stadion', [PenyewaanStadionController::class, 'index'])->name('penyewaan-stadion.index');
     Route::patch('/penyewaan-stadion/{booking}/finish', [PenyewaanStadionController::class, 'finish'])->name('penyewaan_stadion.finish');
 });
-
+    // routes/web.php (sudah kamu punya)
+    Route::get('/tiket/{id}/pdf', [TiketController::class, 'downloadTiket'])->name('tiket.download');
 require __DIR__.'/auth.php';

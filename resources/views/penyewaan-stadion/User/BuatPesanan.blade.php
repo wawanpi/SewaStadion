@@ -5,108 +5,141 @@
 
     <div class="py-8">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-md rounded-lg p-6">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 bg-white border-b border-gray-200">
+                    {{-- Flash Success --}}
+                    @if (session('success'))
+                        <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded">
+                            <div class="flex items-center">
+                                <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                </svg>
+                                <p class="font-medium">{{ session('success') }}</p>
+                            </div>
+                        </div>
+                    @endif
 
-                {{-- Flash Success --}}
-                @if (session('success'))
-                    <div class="mb-4 p-4 bg-green-100 text-green-800 rounded-md">
-                        {{ session('success') }}
-                    </div>
-                @endif
+                    {{-- Error Message --}}
+                    @if ($errors->any())
+                        <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded">
+                            <div class="flex items-center">
+                                <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                </svg>
+                                <p class="font-medium">Terdapat kesalahan dalam pengisian form:</p>
+                            </div>
+                            <ul class="mt-2 list-disc list-inside text-sm">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
-                {{-- Error Message --}}
-                @if ($errors->any())
-                    <div class="mb-4">
-                        <ul class="list-disc list-inside text-sm text-red-600">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+                    <form action="{{ route('penyewaan_stadion.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                        @csrf
 
-                {{-- Form --}}
-                <form action="{{ route('penyewaan_stadion.store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {{-- Stadion --}}
+                            <div class="col-span-2">
+                                <label for="stadion_id" class="block text-sm font-medium text-gray-700 mb-1">Stadion</label>
+                                <select name="stadion_id" id="stadion_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md shadow-sm" required>
+                                    <option value="">-- Pilih Stadion --</option>
+                                    @foreach ($stadions as $stadion)
+                                        <option value="{{ $stadion->id }}" {{ old('stadion_id') == $stadion->id ? 'selected' : '' }}>
+                                            {{ $stadion->nama }} - {{ $stadion->lokasi }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-                    {{-- Stadion --}}
-                    <div class="mb-4">
-                        <label for="stadion_id" class="block text-sm font-medium text-gray-700">Stadion</label>
-                        <select name="stadion_id" id="stadion_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
-                            <option value="">-- Pilih Stadion --</option>
-                            @foreach ($stadions as $stadion)
-                                <option value="{{ $stadion->id }}" {{ old('stadion_id') == $stadion->id ? 'selected' : '' }}>
-                                    {{ $stadion->nama }} - {{ $stadion->lokasi }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                            {{-- Tanggal Mulai --}}
+                            <div>
+                                <label for="tanggal_mulai" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai</label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <input type="date" name="tanggal_mulai" id="tanggal_mulai" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-3 pr-10 py-2 sm:text-sm border-gray-300 rounded-md" required value="{{ old('tanggal_mulai') }}" min="{{ date('Y-m-d') }}">
+                                </div>
+                            </div>
 
-                    {{-- Tanggal Mulai --}}
-                    <div class="mb-4">
-                        <label for="tanggal_mulai" class="block text-sm font-medium text-gray-700">Tanggal Mulai</label>
-                        <input type="date" name="tanggal_mulai" id="tanggal_mulai" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required value="{{ old('tanggal_mulai') }}" min="{{ date('Y-m-d') }}">
-                    </div>
+                            {{-- Slot Waktu --}}
+                            <div>
+                                <label for="slot_waktu" class="block text-sm font-medium text-gray-700 mb-1">Slot Waktu</label>
+                                <select name="slot_waktu" id="slot_waktu" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md shadow-sm" required>
+                                    <option value="">-- Pilih Slot --</option>
+                                    <option value="1" {{ old('slot_waktu') == 1 ? 'selected' : '' }}>Pagi - Siang (06:00 - 12:00)</option>
+                                    <option value="2" {{ old('slot_waktu') == 2 ? 'selected' : '' }}>Siang - Sore (12:00 - 18:00)</option>
+                                    <option value="3" {{ old('slot_waktu') == 3 ? 'selected' : '' }}>Full Day (00:00 - 23:59)</option>
+                                </select>
+                            </div>
 
-                    {{-- Slot Waktu --}}
-                    <div class="mb-4">
-                        <label for="slot_waktu" class="block text-sm font-medium text-gray-700">Slot Waktu</label>
-                        <select name="slot_waktu" id="slot_waktu" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
-                            <option value="">-- Pilih Slot --</option>
-                            <option value="1" {{ old('slot_waktu') == 1 ? 'selected' : '' }}>Pagi - Siang (06:00 - 12:00)</option>
-                            <option value="2" {{ old('slot_waktu') == 2 ? 'selected' : '' }}>Siang - Sore (12:00 - 18:00)</option>
-                            <option value="3" {{ old('slot_waktu') == 3 ? 'selected' : '' }}>Full Day (00:00 - 23:59)</option>
-                        </select>
-                    </div>
+                            {{-- Durasi --}}
+                            <div>
+                                <label for="durasi_hari" class="block text-sm font-medium text-gray-700 mb-1">Durasi (hari)</label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <input type="number" name="durasi_hari" id="durasi_hari" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-3 pr-10 py-2 sm:text-sm border-gray-300 rounded-md" min="1" value="{{ old('durasi_hari', 1) }}" required>
+                                </div>
+                                <p class="mt-1 text-xs text-gray-500">* Untuk slot selain full day, hanya boleh 1 hari.</p>
+                            </div>
 
-                    {{-- Durasi --}}
-                    <div class="mb-4">
-                        <label for="durasi_hari" class="block text-sm font-medium text-gray-700">Durasi (hari)</label>
-                        <input type="number" name="durasi_hari" id="durasi_hari" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" min="1" value="{{ old('durasi_hari', 1) }}" required>
-                        <p class="text-xs text-gray-500 mt-1">* Untuk slot selain full day, hanya boleh 1 hari.</p>
-                    </div>
+                            {{-- Tanggal Selesai (Hidden) --}}
+                            <input type="hidden" name="tanggal_selesai" id="tanggal_selesai" value="{{ old('tanggal_selesai') }}">
+                            
+                            {{-- Display Tanggal Selesai --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Selesai</label>
+                                <div class="mt-1 p-2 bg-gray-50 rounded-md border border-gray-200">
+                                    <p id="display_tanggal_selesai" class="text-sm text-gray-700">-</p>
+                                </div>
+                            </div>
 
-                    {{-- Tanggal Selesai (Hidden) --}}
-                    <input type="hidden" name="tanggal_selesai" id="tanggal_selesai" value="{{ old('tanggal_selesai') }}">
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Tanggal Selesai</label>
-                        <p id="display_tanggal_selesai" class="text-lg font-semibold text-gray-700">-</p>
-                    </div>
+                            {{-- Total Hari --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Total Hari</label>
+                                <div class="mt-1 p-2 bg-gray-50 rounded-md border border-gray-200">
+                                    <p id="total_hari" class="text-sm font-medium text-blue-600">0 hari</p>
+                                </div>
+                            </div>
+                        </div>
 
-                    {{-- Total Hari --}}
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Total Hari</label>
-                        <p id="total_hari" class="text-lg font-semibold text-green-600">0 hari</p>
-                    </div>
+                        {{-- Catatan Tambahan --}}
+                        <div>
+                            <label for="catatan_tambahan" class="block text-sm font-medium text-gray-700 mb-1">Catatan Tambahan</label>
+                            <div class="mt-1">
+                                <textarea name="catatan_tambahan" id="catatan_tambahan" rows="3" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">{{ old('catatan_tambahan') }}</textarea>
+                            </div>
+                        </div>
 
-                    {{-- Catatan Tambahan --}}
-                    <div class="mb-4">
-                        <label for="catatan_tambahan" class="block text-sm font-medium text-gray-700">Catatan Tambahan</label>
-                        <textarea name="catatan_tambahan" id="catatan_tambahan" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" rows="3">{{ old('catatan_tambahan') }}</textarea>
-                    </div>
+                        {{-- Bukti Pembayaran --}}
+                        <div>
+                            <label for="bukti_pembayaran" class="block text-sm font-medium text-gray-700 mb-1">Bukti Pembayaran (Opsional)</label>
+                            <div class="mt-1 flex items-center">
+                                <input type="file" name="bukti_pembayaran" id="bukti_pembayaran" class="focus:ring-blue-500 focus:border-blue-500 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" accept=".jpg,.jpeg,.png,.pdf">
+                            </div>
+                            <p class="mt-1 text-xs text-gray-500">Format: JPG, PNG, PDF (maks. 5MB)</p>
+                            <div id="fileError" class="mt-1 text-sm text-red-600 hidden">File terlalu besar, maksimum 5MB.</div>
+                        </div>
 
-                    {{-- Bukti Pembayaran --}}
-                    <div class="mb-4">
-                        <label for="bukti_pembayaran" class="block text-sm font-medium text-gray-700">Bukti Pembayaran (Opsional)</label>
-                        <input type="file" name="bukti_pembayaran" id="bukti_pembayaran" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" accept=".jpg,.jpeg,.png,.pdf">
-                        <small class="text-gray-500">Format: JPG, PNG, PDF (maks. 5MB)</small>
-                        <div id="fileError" class="text-red-600 mt-1 hidden">File terlalu besar, maksimum 5MB.</div>
-                    </div>
+                        {{-- Total Harga --}}
+                        <div class="bg-blue-50 p-4 rounded-md border border-blue-100">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-medium text-gray-700">Total Harga</span>
+                                <div class="flex items-center">
+                                    <span id="harga_total" class="text-xl font-bold text-blue-600">
+                                        <span class="harga-text">Rp 0</span> 
+                                        <span id="loadingHarga" class="ml-2 text-sm text-blue-400 hidden">(menghitung...)</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
 
-                    {{-- Total Harga --}}
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Total Harga</label>
-                        <p id="harga_total" class="text-lg font-semibold text-green-600">
-                            <span class="harga-text">Rp 0</span> 
-                            <span id="loadingHarga" class="text-sm text-gray-400 hidden">(menghitung...)</span>
-                        </p>
-                    </div>
-
-                    {{-- Submit --}}
-                    <div class="flex justify-end">
-                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Ajukan Penyewaan</button>
-                    </div>
-                </form>
+                        {{-- Submit --}}
+                        <div class="flex justify-end pt-4">
+                            <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                                Ajukan Penyewaan
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
