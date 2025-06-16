@@ -27,181 +27,133 @@
         </div>
     </section>
 
-    <!-- Search Section - Futuristic Design -->
-    <section class="relative py-16 bg-white -mt-20 z-10">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100 transform -translate-y-20">
-                <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-red-500">Cari Lapangan Impianmu</span>
-                </h2>
+<!-- Search Section - Futuristic Design -->
+<section class="relative py-16 bg-white -mt-20 z-10">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100 transform -translate-y-20">
+            <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
+                Cari Stadion
+            </h2>
+    <form method="GET" action="{{ route('dashboard') }}">
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-                    <div class="md:col-span-5">
+                    <div class="md:col-span-10">
                         <div class="relative">
-                            <input type="text" placeholder="Cari nama venue..." 
-                                   class="w-full pl-12 pr-6 py-4 border-0 bg-gray-50 rounded-xl focus:ring-2 focus:ring-yellow-400 shadow-lg text-gray-700">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 absolute left-4 top-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            <input 
+                                type="text" 
+                                name="search" 
+                                value="{{ request('search') }}" 
+                                placeholder="Cari nama fasilitas..." 
+                                class="w-full pl-12 pr-6 py-4 border-0 bg-gray-50 rounded-xl focus:ring-2 focus:ring-yellow-400 shadow-lg text-gray-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" 
+                                class="h-6 w-6 absolute left-4 top-4 text-gray-400" 
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
                     </div>
-                    <div class="md:col-span-3">
-                        <div class="relative">
-                            <select class="w-full pl-12 pr-6 py-4 border-0 bg-gray-50 rounded-xl focus:ring-2 focus:ring-yellow-400 shadow-lg appearance-none text-gray-700">
-                                <option value="">Semua Kota</option>
-                                <option>Yogyakarta</option>
-                                <option>Jakarta</option>
-                                <option>Bandung</option>
-                            </select>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 absolute left-4 top-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <div class="md:col-span-2">
+                        <button type="submit" 
+                                class="w-full h-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl font-bold shadow-lg transition-all transform hover:scale-105 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" 
+                                class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
-                        </div>
-                    </div>
-                    <div class="md:col-span-3">
-                        <div class="relative">
-                            <select class="w-full pl-12 pr-6 py-4 border-0 bg-gray-50 rounded-xl focus:ring-2 focus:ring-yellow-400 shadow-lg appearance-none text-gray-700">
-                                <option value="">Semua Olahraga</option>
-                                <option>Futsal</option>
-                                <option>Badminton</option>
-                                <option>Basket</option>
-                            </select>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 absolute left-4 top-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="md:col-span-1">
-                        <button class="w-full h-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl font-bold shadow-lg transition-all transform hover:scale-105 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
+                            <span class="ml-2">Cari</span>
                         </button>
                     </div>
                 </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Venue List -->
+<section id="venue-list" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6">
+
+        @if(request('search'))
+            <p class="text-sm text-gray-500 mb-8">
+                Hasil pencarian untuk: <span class="font-semibold">"{{ request('search') }}"</span>
+            </p>
+        @endif
+
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16">
+            <div>
+                <h2 class="text-4xl font-bold text-gray-900 mb-2">
+                    Venue <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-red-500">Premium</span>
+                </h2>
+                <p class="text-lg text-gray-600">{{ $stadions->count() }} venue tersedia di platform kami</p>
             </div>
         </div>
-    </section>
 
-    <!-- Venue List - Ultra Modern Cards -->
-    <section id="venue-list" class="py-20 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16">
-                <div>
-                    <h2 class="text-4xl font-bold text-gray-900 mb-2">
-                        Venue <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-red-500">Premium</span>
-                    </h2>
-                    <p class="text-lg text-gray-600">{{ $stadions->count() }} venue tersedia di platform kami</p>
-                </div>
-                <div class="mt-6 md:mt-0">
-                    <div class="flex space-x-2">
-                        <button class="px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-gray-700 font-medium hover:bg-gray-50">
-                            Terdekat
-                        </button>
-                        <button class="px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-gray-700 font-medium hover:bg-gray-50">
-                            Rating Tertinggi
-                        </button>
-                        <button class="px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-gray-700 font-medium hover:bg-gray-50">
-                            Harga Terbaik
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                @forelse ($stadions as $stadion)
-                    <div class="group relative bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2">
-                        <div class="relative h-64 overflow-hidden">
-                            <img src="{{ $stadion->foto ? asset('storage/' . $stadion->foto) : asset('images/default-venue.jpg') }}" 
-                                 alt="{{ $stadion->nama }}" 
-                                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent"></div>
-                            <div class="absolute top-4 left-4 flex space-x-2">
-                                <span class="bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                                    Buka 24 Jam
-                                </span>
-                                <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                                    Promo
-                                </span>
-                            </div>
-                            <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-                                <div>
-                                    <h3 class="text-xl font-bold text-white">{{ $stadion->nama }}</h3>
-                                    <div class="flex items-center mt-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                        <span class="ml-1 text-white font-medium">4.8</span>
-                                        <span class="mx-2 text-white">•</span>
-                                        <span class="text-white text-sm">200+ booking</span>
-                                    </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            @forelse ($stadions as $stadion)
+                <div class="group relative bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="{{ $stadion->foto ? asset('storage/' . $stadion->foto) : asset('images/default-venue.jpg') }}" 
+                             alt="{{ $stadion->nama }}" 
+                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent"></div>
+                        <div class="absolute top-4 left-4 flex space-x-2">
+                            <span class="bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-bold">Buka 24 Jam</span>
+                            <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">Promo</span>
+                        </div>
+                        <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                            <div>
+                                <h3 class="text-xl font-bold text-white">{{ $stadion->nama }}</h3>
+                                <div class="flex items-center mt-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <span class="ml-1 text-white font-medium">4.8</span>
+                                    <span class="mx-2 text-white">•</span>
+                                    <span class="text-white text-sm">200+ booking</span>
                                 </div>
-                                <span class="bg-black/30 text-white px-2 py-1 rounded text-xs">
-                                    {{ $stadion->lokasi }}
-                                </span>
                             </div>
-                        </div>
-                        <div class="p-6">
-                            <p class="text-gray-600 mb-4 line-clamp-2">{{ $stadion->deskripsi }}</p>
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <p class="text-xs text-gray-500">Mulai dari</p>
-                                    <p class="text-xl font-bold text-gray-900">Rp 100.000<span class="text-sm font-normal text-gray-500">/jam</span></p>
-                                </div>
-                                <a href="#" class="relative overflow-hidden group bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-3 rounded-lg font-bold shadow-lg transition-all duration-300">
-                                    <span class="relative z-10">Booking Sekarang</span>
-                                    <span class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
-                                </a>
-                            </div>
+                            <span class="bg-black/30 text-white px-2 py-1 rounded text-xs">
+                                {{ $stadion->lokasi }}
+                            </span>
                         </div>
                     </div>
-                @empty
-                    <div class="col-span-3 text-center py-16">
-                        <div class="max-w-md mx-auto">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 mx-auto text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <h3 class="mt-6 text-2xl font-medium text-gray-700">Belum ada venue tersedia</h3>
-                            <p class="mt-2 text-gray-500">Silakan coba dengan kriteria pencarian yang berbeda atau coba lagi nanti.</p>
-                            <button class="mt-6 px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-black rounded-lg font-bold shadow-lg transition-all transform hover:scale-105">
-                                Refresh Halaman
-                            </button>
+                    <div class="p-6">
+                        <p class="text-gray-600 mb-4 line-clamp-2">{{ $stadion->deskripsi }}</p>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-xs text-gray-500">Mulai dari</p>
+                                <p class="text-xl font-bold text-gray-900">Rp {{ number_format(100000, 0, ',', '.') }}<span class="text-sm font-normal text-gray-500">/jam</span></p>
+                            </div>
+                            <a href="#" class="relative overflow-hidden group bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-3 rounded-lg font-bold shadow-lg transition-all duration-300">
+                                <span class="relative z-10">Booking Sekarang</span>
+                                <span class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
+                            </a>
                         </div>
                     </div>
-                @endforelse
-            </div>
-
-            <div class="mt-16 text-center">
-                <button class="px-8 py-4 border-2 border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition-all transform hover:scale-105">
-                    Lihat Lebih Banyak Venue
-                </button>
-            </div>
+                </div>
+            @empty
+                <div class="col-span-3 text-center py-16">
+                    <div class="max-w-md mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 mx-auto text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h3 class="mt-6 text-2xl font-medium text-gray-700">Belum ada venue tersedia</h3>
+                        <p class="mt-2 text-gray-500">Silakan coba dengan kriteria pencarian yang berbeda atau coba lagi nanti.</p>
+                        <a href="{{ route('stadion.index') }}" class="mt-6 inline-block px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-black rounded-lg font-bold shadow-lg transition-all transform hover:scale-105">
+                            Refresh Halaman
+                        </a>
+                    </div>
+                </div>
+            @endforelse
         </div>
-    </section>
 
-    <!-- Stats Section -->
-    <section class="py-20 bg-gradient-to-r from-gray-900 to-gray-800 text-white">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-                <div class="p-6">
-                    <div class="text-5xl font-bold mb-2 animate-count" data-count="5000">0</div>
-                    <div class="text-lg text-gray-300">Pengguna Aktif</div>
-                </div>
-                <div class="p-6">
-                    <div class="text-5xl font-bold mb-2 animate-count" data-count="250">0</div>
-                    <div class="text-lg text-gray-300">Venue Terdaftar</div>
-                </div>
-                <div class="p-6">
-                    <div class="text-5xl font-bold mb-2 animate-count" data-count="10000">0</div>
-                    <div class="text-lg text-gray-300">Booking Sukses</div>
-                </div>
-                <div class="p-6">
-                    <div class="text-5xl font-bold mb-2 animate-count" data-count="4.9">0</div>
-                    <div class="text-lg text-gray-300">Rating Aplikasi</div>
-                </div>
-            </div>
+        <div class="mt-16 text-center">
+            {{-- Pagination (jika ada) --}}
+            {{ $stadions->links() }}
         </div>
-    </section>
+    </div>
+</section>
+
 
     <!-- CTA Section - Modern Gradient -->
     <section class="py-24 bg-gradient-to-r from-blue-900 to-blue-700 text-white">
@@ -309,16 +261,6 @@
             </div>
         </div>
     </footer>
-
-    <!-- Floating Action Button -->
-    <div class="fixed bottom-8 right-8 z-50">
-        <a href="#" class="w-16 h-16 bg-red-600 hover:bg-red-700 rounded-full shadow-lg flex items-center justify-center text-white transition-all transform hover:scale-110">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-        </a>
-    </div>
-
     <style>
         .animate-fade-in-up {
             animation: fadeInUp 0.8s ease-out forwards;

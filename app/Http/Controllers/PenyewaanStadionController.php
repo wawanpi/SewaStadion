@@ -299,4 +299,17 @@ class PenyewaanStadionController extends Controller
             'durasi' => $validated['durasi'],
         ]);
     }
+    //Pembayaran
+    public function showPembayaran()
+    {
+        $booking = PenyewaanStadion::where('user_id', Auth::id())
+            ->where('status', 'Diterima')
+            ->whereNull('bukti_pembayaran') // hanya yang belum upload bukti
+            ->latest()
+            ->first();
+
+        return view('penyewaan-stadion.User.Pembayaran', compact('booking'));
+    }
+    
+
 }

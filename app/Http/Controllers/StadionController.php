@@ -128,10 +128,18 @@ class StadionController extends Controller
         return redirect()->route('stadion.index')->with('success', $messages[$status]);
     }
     */
-    public function showDashboard()
+    public function showDashboard(Request $request)
     {
-        $stadions = Stadion::latest()->get(); // ambil semua data stadion dari database
+        $query = Stadion::query();
+
+        if ($search = $request->input('search')) {
+            $query->where('nama', 'like', "%{$search}%");
+        }
+
+        $stadions = $query->latest()->paginate(6); // gunakan paginate agar bisa gunakan links()
+
         return view('dashboard', compact('stadions'));
     }
+
 
 }

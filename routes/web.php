@@ -30,12 +30,19 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/penyewaan-stadion/my-bookings', [PenyewaanStadionController::class, 'myBookings'])->name('penyewaan-stadion.my');
     Route::delete('/penyewaan-stadion/{penyewaan}', [PenyewaanStadionController::class, 'destroy'])->name('penyewaan-stadion.destroy');
     Route::get('/penyewaan-stadion/lihat-jadwal', [PenyewaanStadionController::class, 'lihatJadwal'])->name('penyewaan_stadion.lihat_jadwal');
+    Route::get('/penyewaan-stadion/pembayaran', [PenyewaanStadionController::class, 'showPembayaran'])->name('penyewaan.pembayaran');
+    Route::post('/penyewaan/{booking}/upload-bukti', [PenyewaanStadionController::class, 'uploadBuktiPembayaran'])->name('penyewaan.uploadBukti');
+
 
     // **Tambahan route AJAX untuk hitung harga sewa**
     // routes/web.php
     Route::post('/penyewaan-stadion/hitung-harga', [PenyewaanStadionController::class, 'hitungHargaTotal'])->name('penyewaan-stadion.hitung-harga');
-
+    //Iket
     Route::get('/tiket/{id}/pdf', [TiketController::class, 'downloadTiket'])->name('tiket.download');
+    //Pembayaran
+    Route::get('/penyewaan-stadion/pembayaran', [PenyewaanStadionController::class, 'showPembayaran'])
+    ->name('penyewaan.pembayaran');
+
 
 });
 
