@@ -32,6 +32,8 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/penyewaan-stadion/lihat-jadwal', [PenyewaanStadionController::class, 'lihatJadwal'])->name('penyewaan_stadion.lihat_jadwal');
     Route::get('/penyewaan-stadion/pembayaran', [PenyewaanStadionController::class, 'showPembayaran'])->name('penyewaan.pembayaran');
     Route::post('/penyewaan/{booking}/upload-bukti', [PenyewaanStadionController::class, 'uploadBuktiPembayaran'])->name('penyewaan.uploadBukti');
+    Route::get('/api/ketersediaan', [PenyewaanStadionController::class, 'getKetersediaan'])->name('ketersediaan');
+
 
 
     // **Tambahan route AJAX untuk hitung harga sewa**
