@@ -142,31 +142,53 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        const bookedDates = @json($bookedDates);
+        let fp;
 
-        flatpickr("#tanggal_mulai", {
-            dateFormat: "Y-m-d",
-            minDate: "{{ date('Y-m-d') }}",
-            disable: bookedDates,
-            onChange: function () {
-                $('#tanggal_mulai').trigger('change');
-            },
-            onDayCreate: function (dObj, dStr, fp, dayElem) {
-                const dateStr = dayElem.dateObj.toISOString().split('T')[0];
-                if (bookedDates.includes(dateStr)) {
-                    dayElem.classList.add("flatpickr-disabled-custom");
+        function fetchKetersediaan() {
+            const stadionId = $('#stadion_id').val();
+            const slotWaktu = $('#slot_waktu').val();
+            
+            if (!stadionId || !slotWaktu) return;
+
+            $.ajax({
+                url: '{{ route("penyewaan-stadion.ketersediaan") }}',
+                method: 'GET',
+                data: { 
+                    stadion_id: stadionId,
+                    slot_waktu: slotWaktu
+                },
+                success: function (response) {
+                    // Disable all fully booked dates
+                    const disabledDates = response.fully_booked_dates;
+                    
+                    // Also disable dates where the specific slot is booked
+                    Object.keys(response.data).forEach(date => {
+                        const slots = response.data[date];
+                        
+                        // Full day blocks everything
+                        if (slots['full-day']) {
+                            disabledDates.push(date);
+                            return;
+                        }
+                        
+                        // Check for slot conflicts
+                        if ((slotWaktu == 1 && slots['pagi-siang']) || 
+                            (slotWaktu == 2 && slots['siang-sore'])) {
+                            disabledDates.push(date);
+                        }
+                    });
+
+                    // Make sure dates are unique
+                    const uniqueDisabledDates = [...new Set(disabledDates)];
+                    
+                    fp.set('disable', uniqueDisabledDates);
+                    fp.redraw();
+                },
+                error: function(xhr) {
+                    console.error('Error fetching availability:', xhr.responseText);
                 }
-            }
-        });
-        $('#bukti_pembayaran').on('change', function () {
-            const file = this.files[0];
-            if (file && file.size > 5 * 1024 * 1024) {
-                $('#fileError').removeClass('hidden');
-                this.value = '';
-            } else {
-                $('#fileError').addClass('hidden');
-            }
-        });
+            });
+        }
 
         function hitungTanggalSelesai() {
             const mulai = new Date($('#tanggal_mulai').val());
@@ -223,17 +245,37 @@
         }
 
         $(document).ready(function () {
+            fp = flatpickr("#tanggal_mulai", {
+                dateFormat: "Y-m-d",
+                minDate: "today",
+                onChange: function(selectedDates, dateStr) {
+                    fetchHarga();
+                    fetchKetersediaan();
+                },
+                onDayCreate: function(dObj, dStr, fp, dayElem) {
+                    const dateStr = dayElem.dateObj.toISOString().split('T')[0];
+                    if (fp.config.disable.includes(dateStr)) {
+                        dayElem.classList.add("flatpickr-disabled-custom");
+                    }
+                }
+            });
+
             $('#tanggal_mulai, #durasi_hari, #stadion_id, #slot_waktu').on('change', fetchHarga);
+            $('#stadion_id, #slot_waktu').on('change', fetchKetersediaan);
+            
+            // Initialize
             fetchHarga();
+            fetchKetersediaan();
         });
     </script>
+
     <style>
-    .flatpickr-disabled-custom {
-        background-color:rgb(255, 0, 0) !important; /* warna merah muda */
-        color: white !important;
-        border-radius: 0.375rem;
-        opacity: 0.85;
-        pointer-events: none;
-    }
-</style>
+        .flatpickr-disabled-custom {
+            background-color: #fecaca !important;
+            color: #991b1b !important;
+            border-radius: 0.375rem;
+            text-decoration: line-through;
+            pointer-events: none;
+        }
+    </style>
 </x-app-layout>

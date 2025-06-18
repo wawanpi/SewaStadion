@@ -156,15 +156,28 @@ class PenyewaanStadionController extends Controller
         return back()->with('error', 'File tidak ditemukan.');
     }
 
-    private function isJadwalBentrok(int $stadionId, string $tanggal, int $slotWaktu): bool
+        private function isJadwalBentrok(int $stadionId, string $tanggal, int $slotWaktu): bool
     {
-        return PenyewaanStadion::where('stadion_id', $stadionId)
-            ->where('tanggal_mulai', $tanggal)
-            ->where('slot_waktu', $slotWaktu)
+        $existingBookings = PenyewaanStadion::where('stadion_id', $stadionId)
+            ->whereDate('tanggal_mulai', '<=', $tanggal)
+            ->whereDate('tanggal_selesai', '>=', $tanggal)
             ->whereIn('status', ['Menunggu', 'Diterima'])
-            ->exists();
-    }
+            ->get();
 
+        foreach ($existingBookings as $booking) {
+            // Full day booking blocks everything
+            if ($booking->kondisi === 'full-day') {
+                return true;
+            }
+
+            // Same slot is already booked
+            if ($booking->slot_waktu == $slotWaktu) {
+                return true;
+            }
+        }
+
+        return false;
+    }
     private function hitungWaktuSelesai(string $tanggal, int $slotWaktu, int $durasi): Carbon
     {
         $start = Carbon::parse($tanggal);
@@ -263,44 +276,61 @@ class PenyewaanStadionController extends Controller
         return view('penyewaan-stadion.User.Pembayaran', compact('booking'));
     }
 
-    public function getKetersediaan(Request $request)
+        public function getKetersediaan(Request $request)
     {
         $stadionId = $request->input('stadion_id');
-        $startDate = $request->input('start_date', now()->toDateString());
-        $endDate = $request->input('end_date', now()->addDays(30)->toDateString());
+        $slotWaktu = $request->input('slot_waktu');
+        
+        if (!$stadionId) {
+            return response()->json([
+                'data' => [],
+                'fully_booked_dates' => []
+            ]);
+        }
 
         $bookings = PenyewaanStadion::where('stadion_id', $stadionId)
-            ->whereBetween('tanggal_mulai', [$startDate, $endDate])
             ->whereIn('status', ['Menunggu', 'Diterima'])
             ->get();
 
         $data = [];
+        $fullyBookedDates = [];
 
         foreach ($bookings as $booking) {
-            $tgl = $booking->tanggal_mulai;
-            $kondisi = $booking->kondisi;
+            $start = Carbon::parse($booking->tanggal_mulai);
+            $end = Carbon::parse($booking->tanggal_selesai);
 
-            if (!isset($data[$tgl])) {
-                $data[$tgl] = [
-                    'pagi-siang' => false,
-                    'siang-sore' => false,
-                    'full-day' => false,
-                ];
+            for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
+                $dateStr = $date->toDateString();
+                
+                if (!isset($data[$dateStr])) {
+                    $data[$dateStr] = [
+                        'pagi-siang' => false,
+                        'siang-sore' => false,
+                        'full-day' => false,
+                    ];
+                }
+
+                // Mark the specific slot as booked
+                $data[$dateStr][$booking->kondisi] = true;
+
+                // If full-day is booked, mark all slots
+                if ($booking->kondisi === 'full-day') {
+                    $data[$dateStr]['pagi-siang'] = true;
+                    $data[$dateStr]['siang-sore'] = true;
+                }
             }
-
-            $data[$tgl][$kondisi] = true;
         }
 
-        $tanggalPenuh = [];
-        foreach ($data as $tgl => $slots) {
+        // Find dates where all slots are booked
+        foreach ($data as $date => $slots) {
             if ($slots['pagi-siang'] && $slots['siang-sore'] && $slots['full-day']) {
-                $tanggalPenuh[] = $tgl;
+                $fullyBookedDates[] = $date;
             }
         }
 
         return response()->json([
             'data' => $data,
-            'tanggal_penuh' => $tanggalPenuh,
+            'fully_booked_dates' => $fullyBookedDates,
         ]);
     }
 }
