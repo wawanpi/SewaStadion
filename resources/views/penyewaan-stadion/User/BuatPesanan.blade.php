@@ -52,15 +52,7 @@
                                     @endforeach
                                 </select>
                             </div>
-
-                            {{-- Tanggal Mulai --}}
-                            <div>
-                                <label for="tanggal_mulai" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai</label>
-                                <div class="mt-1 relative rounded-md shadow-sm">
-                                    <input type="text" name="tanggal_mulai" id="tanggal_mulai" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-3 pr-10 py-2 sm:text-sm border-gray-300 rounded-md" required value="{{ old('tanggal_mulai') }}">
-                                </div>
-                            </div>
-
+                            
                             {{-- Slot Waktu --}}
                             <div>
                                 <label for="slot_waktu" class="block text-sm font-medium text-gray-700 mb-1">Slot Waktu</label>
@@ -70,6 +62,13 @@
                                     <option value="2" {{ old('slot_waktu') == 2 ? 'selected' : '' }}>Siang - Sore (12:00 - 18:00)</option>
                                     <option value="3" {{ old('slot_waktu') == 3 ? 'selected' : '' }}>Full Day (00:00 - 23:59)</option>
                                 </select>
+                            </div>
+                           {{-- Tanggal Mulai --}}
+                            <div>
+                                <label for="tanggal_mulai" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai</label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <input type="text" name="tanggal_mulai" id="tanggal_mulai" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-3 pr-10 py-2 sm:text-sm border-gray-300 rounded-md" required value="{{ old('tanggal_mulai') }}">
+                                </div>
                             </div>
 
                             {{-- Durasi --}}
@@ -101,14 +100,6 @@
                         <div>
                             <label for="catatan_tambahan" class="block text-sm font-medium text-gray-700 mb-1">Catatan Tambahan</label>
                             <textarea name="catatan_tambahan" id="catatan_tambahan" rows="3" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">{{ old('catatan_tambahan') }}</textarea>
-                        </div>
-
-                        {{-- Bukti Pembayaran --}}
-                        <div>
-                            <label for="bukti_pembayaran" class="block text-sm font-medium text-gray-700 mb-1">Bukti Pembayaran (Opsional)</label>
-                            <input type="file" name="bukti_pembayaran" id="bukti_pembayaran" class="focus:ring-blue-500 focus:border-blue-500 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" accept=".jpg,.jpeg,.png,.pdf">
-                            <p class="mt-1 text-xs text-gray-500">Format: JPG, PNG, PDF (maks. 5MB)</p>
-                            <div id="fileError" class="mt-1 text-sm text-red-600 hidden">File terlalu besar, maksimum 5MB.</div>
                         </div>
 
                         {{-- Total Harga --}}
