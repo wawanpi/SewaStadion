@@ -61,7 +61,7 @@ class PenyewaanStadionController extends Controller
 
         if (in_array($validated['slot_waktu'], [1, 2]) && $validated['durasi_hari'] > 1) {
             return back()->withInput()->withErrors([
-                'durasi' => 'Slot waktu Pagi atau Sore hanya boleh dipilih untuk 1 hari.'
+                'durasi_hari' => 'Slot waktu Pagi atau Sore hanya boleh dipilih untuk 1 hari.'
             ]);
         }
 
@@ -73,9 +73,9 @@ class PenyewaanStadionController extends Controller
             return back()->withInput()->withErrors(['harga' => 'Harga sewa belum tersedia untuk kondisi ini.']);
         }
 
+        // Cek bentrok untuk semua hari dalam durasi
         for ($i = 0; $i < $validated['durasi_hari']; $i++) {
             $tanggal = Carbon::parse($validated['tanggal_mulai'])->addDays($i)->toDateString();
-
             if ($this->isJadwalBentrok($validated['stadion_id'], $tanggal, $validated['slot_waktu'])) {
                 return back()->withInput()->withErrors([
                     'tanggal_sewa' => "Jadwal untuk tanggal $tanggal dan slot waktu ini sudah dipesan."
@@ -83,34 +83,36 @@ class PenyewaanStadionController extends Controller
             }
         }
 
-        for ($i = 0; $i < $validated['durasi_hari']; $i++) {
-            $tanggal = Carbon::parse($validated['tanggal_mulai'])->addDays($i)->toDateString();
-            $waktuSelesai = $this->hitungWaktuSelesai($tanggal, $validated['slot_waktu'], 1)->toDateTimeString();
-            $durasiJam = $this->hitungDurasiSewa($tanggal, $validated['slot_waktu'], $waktuSelesai);
+        // Buat data tunggal
+        $tanggalMulai = Carbon::parse($validated['tanggal_mulai'])->toDateString();
+        $tanggalSelesai = Carbon::parse($validated['tanggal_mulai'])->addDays($validated['durasi_hari'] - 1)->toDateString();
+        $waktuSelesai = $this->hitungWaktuSelesai($tanggalSelesai, $validated['slot_waktu'], 1)->toDateTimeString();
+        $durasiJamPerHari = $this->hitungDurasiSewa($tanggalMulai, $validated['slot_waktu'], $waktuSelesai);
+        $durasiJamTotal = $durasiJamPerHari * $validated['durasi_hari'];
 
-            $data = [
-                'user_id' => Auth::id(),
-                'stadion_id' => $validated['stadion_id'],
-                'tanggal_mulai' => $tanggal,
-                'tanggal_selesai' => $tanggal,
-                'durasi' => $durasiJam,
-                'slot_waktu' => $validated['slot_waktu'],
-                'kondisi' => $kondisi,
-                'harga' => $hargaSewa->harga,
-                'status' => 'Menunggu',
-                'catatan_tambahan' => $validated['catatan_tambahan'] ?? null,
-                'waktu_selesai' => $waktuSelesai,
-            ];
+        $data = [
+            'user_id' => Auth::id(),
+            'stadion_id' => $validated['stadion_id'],
+            'tanggal_mulai' => $tanggalMulai,
+            'tanggal_selesai' => $tanggalSelesai,
+            'durasi' => $durasiJamTotal,
+            'slot_waktu' => $validated['slot_waktu'],
+            'kondisi' => $kondisi,
+            'harga' => $hargaSewa->harga * $validated['durasi_hari'],
+            'status' => 'Menunggu',
+            'catatan_tambahan' => $validated['catatan_tambahan'] ?? null,
+            'waktu_selesai' => $waktuSelesai,
+        ];
 
-            if ($request->hasFile('bukti_pembayaran')) {
-                $data['bukti_pembayaran'] = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
-            }
-
-            PenyewaanStadion::create($data);
+        if ($request->hasFile('bukti_pembayaran')) {
+            $data['bukti_pembayaran'] = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
         }
+
+        PenyewaanStadion::create($data);
 
         return redirect()->route('penyewaan-stadion.my')->with('success', 'Booking berhasil dibuat.');
     }
+
 
     public function myBookings()
     {
