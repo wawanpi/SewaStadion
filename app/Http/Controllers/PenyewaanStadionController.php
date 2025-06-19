@@ -156,7 +156,7 @@ class PenyewaanStadionController extends Controller
         return back()->with('error', 'File tidak ditemukan.');
     }
 
-        private function isJadwalBentrok(int $stadionId, string $tanggal, int $slotWaktu): bool
+    private function isJadwalBentrok(int $stadionId, string $tanggal, int $slotWaktu): bool
     {
         $existingBookings = PenyewaanStadion::where('stadion_id', $stadionId)
             ->whereDate('tanggal_mulai', '<=', $tanggal)
@@ -170,8 +170,13 @@ class PenyewaanStadionController extends Controller
                 return true;
             }
 
-            // Same slot is already booked
+            // Jika booking existing adalah slot yang sama
             if ($booking->slot_waktu == $slotWaktu) {
+                return true;
+            }
+
+            // Jika memilih full day dan ada booking apapun di tanggal tersebut
+            if ($slotWaktu == 3 && ($booking->slot_waktu == 1 || $booking->slot_waktu == 2)) {
                 return true;
             }
         }
@@ -276,7 +281,7 @@ class PenyewaanStadionController extends Controller
         return view('penyewaan-stadion.User.Pembayaran', compact('booking'));
     }
 
-        public function getKetersediaan(Request $request)
+            public function getKetersediaan(Request $request)
     {
         $stadionId = $request->input('stadion_id');
         $slotWaktu = $request->input('slot_waktu');
@@ -284,7 +289,8 @@ class PenyewaanStadionController extends Controller
         if (!$stadionId) {
             return response()->json([
                 'data' => [],
-                'fully_booked_dates' => []
+                'fully_booked_dates' => [],
+                'partially_booked_dates' => []
             ]);
         }
 
@@ -293,7 +299,8 @@ class PenyewaanStadionController extends Controller
             ->get();
 
         $data = [];
-        $fullyBookedDates = [];
+        $fullyBookedDates = []; // Tanggal yang sudah full-day atau kedua slot terisi
+        $partiallyBookedDates = []; // Tanggal yang salah satu slot terisi
 
         foreach ($bookings as $booking) {
             $start = Carbon::parse($booking->tanggal_mulai);
@@ -310,10 +317,10 @@ class PenyewaanStadionController extends Controller
                     ];
                 }
 
-                // Mark the specific slot as booked
+                // Tandai slot yang sudah dipesan
                 $data[$dateStr][$booking->kondisi] = true;
 
-                // If full-day is booked, mark all slots
+                // Jika full-day dipesan, tandai semua slot
                 if ($booking->kondisi === 'full-day') {
                     $data[$dateStr]['pagi-siang'] = true;
                     $data[$dateStr]['siang-sore'] = true;
@@ -321,16 +328,34 @@ class PenyewaanStadionController extends Controller
             }
         }
 
-        // Find dates where all slots are booked
+        // Cari tanggal yang sudah penuh
         foreach ($data as $date => $slots) {
-            if ($slots['pagi-siang'] && $slots['siang-sore'] && $slots['full-day']) {
+            // Jika full-day sudah dipesan
+            if ($slots['full-day']) {
                 $fullyBookedDates[] = $date;
+                continue;
+            }
+            
+            // Jika kedua slot pagi dan sore sudah dipesan
+            if ($slots['pagi-siang'] && $slots['siang-sore']) {
+                $fullyBookedDates[] = $date;
+                continue;
+            }
+            
+            // Jika salah satu slot sudah dipesan
+            if ($slots['pagi-siang'] || $slots['siang-sore']) {
+                $partiallyBookedDates[] = [
+                    'date' => $date,
+                    'pagi-siang' => $slots['pagi-siang'],
+                    'siang-sore' => $slots['siang-sore']
+                ];
             }
         }
 
         return response()->json([
             'data' => $data,
             'fully_booked_dates' => $fullyBookedDates,
+            'partially_booked_dates' => $partiallyBookedDates
         ]);
     }
 }

@@ -134,6 +134,7 @@
 
     <script>
         let fp;
+        let availabilityResponse = null;
 
         function fetchKetersediaan() {
             const stadionId = $('#stadion_id').val();
@@ -149,30 +150,30 @@
                     slot_waktu: slotWaktu
                 },
                 success: function (response) {
-                    // Disable all fully booked dates
-                    const disabledDates = response.fully_booked_dates;
+                    availabilityResponse = response;
+                    const fullyDisabledDates = response.fully_booked_dates;
+                    const slotDisabledDates = [];
                     
-                    // Also disable dates where the specific slot is booked
-                    Object.keys(response.data).forEach(date => {
-                        const slots = response.data[date];
-                        
-                        // Full day blocks everything
-                        if (slots['full-day']) {
-                            disabledDates.push(date);
-                            return;
+                    // Cek konflik berdasarkan slot yang dipilih
+                    response.partially_booked_dates.forEach(item => {
+                        // Jika memilih pagi (1) dan pagi sudah dipesan
+                        if (slotWaktu == 1 && item['pagi-siang']) {
+                            slotDisabledDates.push(item.date);
+                        } 
+                        // Jika memilih sore (2) dan sore sudah dipesan
+                        else if (slotWaktu == 2 && item['siang-sore']) {
+                            slotDisabledDates.push(item.date);
                         }
-                        
-                        // Check for slot conflicts
-                        if ((slotWaktu == 1 && slots['pagi-siang']) || 
-                            (slotWaktu == 2 && slots['siang-sore'])) {
-                            disabledDates.push(date);
+                        // Jika memilih full day (3) dan ada booking apapun
+                        else if (slotWaktu == 3 && (item['pagi-siang'] || item['siang-sore'])) {
+                            slotDisabledDates.push(item.date);
                         }
                     });
 
-                    // Make sure dates are unique
-                    const uniqueDisabledDates = [...new Set(disabledDates)];
+                    // Gabungkan semua tanggal yang tidak bisa dipilih
+                    const allDisabledDates = [...new Set([...fullyDisabledDates, ...slotDisabledDates])];
                     
-                    fp.set('disable', uniqueDisabledDates);
+                    fp.set('disable', allDisabledDates);
                     fp.redraw();
                 },
                 error: function(xhr) {
@@ -240,13 +241,38 @@
                 dateFormat: "Y-m-d",
                 minDate: "today",
                 onChange: function(selectedDates, dateStr) {
+                    console.log("Tanggal berubah:", dateStr); // Debugging
                     fetchHarga();
                     fetchKetersediaan();
                 },
                 onDayCreate: function(dObj, dStr, fp, dayElem) {
                     const dateStr = dayElem.dateObj.toISOString().split('T')[0];
+                    
+                    if (!availabilityResponse) return;
+                    
+                    // Reset classes first
+                    dayElem.classList.remove("fully-booked", "partially-booked", "flatpickr-disabled-custom");
+                    
+                    // Check if date is disabled
                     if (fp.config.disable.includes(dateStr)) {
                         dayElem.classList.add("flatpickr-disabled-custom");
+                        
+                        // Check if fully booked
+                        if (availabilityResponse.fully_booked_dates.includes(dateStr)) {
+                            dayElem.classList.add("fully-booked");
+                            dayElem.title = "Tanggal ini sudah penuh (full day atau kedua slot terisi)";
+                        } 
+                        // Check if partially booked
+                        else {
+                            const partialBooking = availabilityResponse.partially_booked_dates.find(item => item.date === dateStr);
+                            if (partialBooking) {
+                                dayElem.classList.add("partially-booked");
+                                let availableSlots = [];
+                                if (!partialBooking['pagi-siang']) availableSlots.push("Pagi");
+                                if (!partialBooking['siang-sore']) availableSlots.push("Sore");
+                                dayElem.title = "Slot tersedia: " + availableSlots.join(", ");
+                            }
+                        }
                     }
                 }
             });
@@ -259,14 +285,4 @@
             fetchKetersediaan();
         });
     </script>
-
-    <style>
-        .flatpickr-disabled-custom {
-            background-color: #fecaca !important;
-            color: #991b1b !important;
-            border-radius: 0.375rem;
-            text-decoration: line-through;
-            pointer-events: none;
-        }
-    </style>
 </x-app-layout>
