@@ -79,7 +79,7 @@ class HargaSewaController extends Controller
         $request->validate([
             'stadion_id' => 'required|exists:stadion,id',
             'kondisi' => 'required|in:' . implode(',', $this->kondisiList),
-            'harga' => 'nullable|numeric|min:0',
+            'harga' => 'required|numeric|min:0',
             'keterangan' => 'nullable|string|max:255',
         ]);
 

@@ -13,9 +13,9 @@ use Carbon\Carbon;
 class PenyewaanStadionController extends Controller
 {
     private const SLOT_WAKTU = [
-        1 => ['start' => '06:00', 'end' => '12:00'],
-        2 => ['start' => '13:00', 'end' => '18:00'],
-        3 => ['start' => '00:00', 'end' => '23:59'],
+        1 => ['start' => '06:00', 'end' => '12:00'], // Pagi-siang (6 jam)
+        2 => ['start' => '13:00', 'end' => '19:00'], // Siang-sore (6 jam) - Diubah dari 18:00 ke 19:00
+        3 => ['start' => '00:00', 'end' => '23:59'], // Full day (24 jam)
     ];
 
     public function index()
@@ -46,73 +46,66 @@ class PenyewaanStadionController extends Controller
         $validated = $request->validate([
             'stadion_id' => 'required|exists:stadion,id',
             'tanggal_mulai' => 'required|date|after_or_equal:today',
-            'durasi_hari' => 'required|integer|min:1',
+            'durasi_hari' => [
+                'required',
+                'integer',
+                'min:1',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->slot_waktu != 3 && $value > 1) {
+                        $fail('Slot waktu Pagi/Sore hanya boleh 1 hari.');
+                    }
+                }
+            ],
             'slot_waktu' => 'required|in:1,2,3',
             'bukti_pembayaran' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
             'catatan_tambahan' => 'nullable|string|max:255',
         ]);
 
+        // Get pricing information
         $kondisiMapping = [1 => 'pagi-siang', 2 => 'siang-sore', 3 => 'full-day'];
-        $kondisi = $kondisiMapping[$validated['slot_waktu']] ?? null;
-
-        if (!$kondisi) {
-            return back()->withInput()->withErrors(['slot_waktu' => 'Slot waktu tidak valid.']);
-        }
-
-        if (in_array($validated['slot_waktu'], [1, 2]) && $validated['durasi_hari'] > 1) {
-            return back()->withInput()->withErrors([
-                'durasi_hari' => 'Slot waktu Pagi atau Sore hanya boleh dipilih untuk 1 hari.'
-            ]);
-        }
-
+        $kondisi = $kondisiMapping[$validated['slot_waktu']];
+        
         $hargaSewa = HargaSewa::where('stadion_id', $validated['stadion_id'])
             ->where('kondisi', $kondisi)
-            ->first();
+            ->firstOrFail();
 
-        if (!$hargaSewa || !$hargaSewa->harga) {
-            return back()->withInput()->withErrors(['harga' => 'Harga sewa belum tersedia untuk kondisi ini.']);
-        }
-
-        // Cek bentrok untuk semua hari dalam durasi
-        for ($i = 0; $i < $validated['durasi_hari']; $i++) {
-            $tanggal = Carbon::parse($validated['tanggal_mulai'])->addDays($i)->toDateString();
-            if ($this->isJadwalBentrok($validated['stadion_id'], $tanggal, $validated['slot_waktu'])) {
-                return back()->withInput()->withErrors([
-                    'tanggal_sewa' => "Jadwal untuk tanggal $tanggal dan slot waktu ini sudah dipesan."
-                ]);
-            }
-        }
-
-        // Buat data tunggal
-        $tanggalMulai = Carbon::parse($validated['tanggal_mulai'])->toDateString();
-        $tanggalSelesai = Carbon::parse($validated['tanggal_mulai'])->addDays($validated['durasi_hari'] - 1)->toDateString();
-        $waktuSelesai = $this->hitungWaktuSelesai($tanggalSelesai, $validated['slot_waktu'], 1)->toDateTimeString();
-        $durasiJamPerHari = $this->hitungDurasiSewa($tanggalMulai, $validated['slot_waktu'], $waktuSelesai);
-        $durasiJamTotal = $durasiJamPerHari * $validated['durasi_hari'];
-
-        $data = [
-            'user_id' => Auth::id(),
-            'stadion_id' => $validated['stadion_id'],
-            'tanggal_mulai' => $tanggalMulai,
-            'tanggal_selesai' => $tanggalSelesai,
-            'durasi' => $durasiJamTotal,
-            'slot_waktu' => $validated['slot_waktu'],
-            'kondisi' => $kondisi,
-            'harga' => $hargaSewa->harga * $validated['durasi_hari'],
-            'status' => 'Menunggu',
-            'catatan_tambahan' => $validated['catatan_tambahan'] ?? null,
-            'waktu_selesai' => $waktuSelesai,
-        ];
-
+        // Calculate time values
+        $startDate = Carbon::parse($validated['tanggal_mulai']);
+        $slotConfig = self::SLOT_WAKTU[$validated['slot_waktu']];
+        
+        // Set waktu mulai sesuai slot
+        $validated['tanggal_mulai'] = $startDate->copy()
+            ->setTime(
+                explode(':', $slotConfig['start'])[0],
+                explode(':', $slotConfig['start'])[1]
+            );
+        
+        // Hitung waktu selesai
+        $validated['waktu_selesai'] = $startDate->copy()
+            ->addDays($validated['durasi_hari'] - 1)
+            ->setTime(
+                explode(':', $slotConfig['end'])[0],
+                explode(':', $slotConfig['end'])[1]
+            );
+        
+        // Hitung durasi jam (6 jam untuk pagi/siang, 24 jam untuk full day)
+        $validated['durasi_jam'] = $validated['durasi_hari'] * 
+            ($validated['slot_waktu'] == 3 ? 24 : 6);
+            
+        $validated['harga'] = $hargaSewa->harga * $validated['durasi_hari'];
+        $validated['user_id'] = auth()->id();
+        $validated['kondisi'] = $kondisi;
+        
+        // Handle file upload
         if ($request->hasFile('bukti_pembayaran')) {
-            $data['bukti_pembayaran'] = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
+            $validated['bukti_pembayaran'] = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
         }
 
-        PenyewaanStadion::create($data);
+        PenyewaanStadion::create($validated);
 
-        return redirect()->route('penyewaan-stadion.my')->with('success', 'Booking berhasil dibuat.');
+        return redirect()->route('penyewaan-stadion.my')
+            ->with('success', 'Booking berhasil dibuat.');
     }
-
 
     public function myBookings()
     {
@@ -160,7 +153,7 @@ class PenyewaanStadionController extends Controller
     {
         $existingBookings = PenyewaanStadion::where('stadion_id', $stadionId)
             ->whereDate('tanggal_mulai', '<=', $tanggal)
-            ->whereDate('tanggal_selesai', '>=', $tanggal)
+            ->whereDate('waktu_selesai', '>=', $tanggal)
             ->whereIn('status', ['Menunggu', 'Diterima'])
             ->get();
 
@@ -183,29 +176,20 @@ class PenyewaanStadionController extends Controller
 
         return false;
     }
-    private function hitungWaktuSelesai(string $tanggal, int $slotWaktu, int $durasi): Carbon
+
+    private function hitungWaktuSelesai(string $tanggal, int $slotWaktu): Carbon
     {
-        $start = Carbon::parse($tanggal);
-
         $slot = self::SLOT_WAKTU[$slotWaktu] ?? self::SLOT_WAKTU[1];
-        $start->setTimeFromTimeString($slot['start']);
-        $batasSelesai = Carbon::parse($tanggal . ' ' . $slot['end']);
-        $end = $start->copy()->addHours($durasi);
-
-        return $end->lessThanOrEqualTo($batasSelesai) ? $end : $batasSelesai;
+        return Carbon::parse($tanggal . ' ' . $slot['end']);
     }
 
-    private function hitungDurasiSewa(string $tanggal, int $slotWaktu, string $waktuSelesai): int
+    private function hitungDurasiSewa(string $tanggalMulai, int $slotWaktu, string $waktuSelesai): int
     {
-        $slot = self::SLOT_WAKTU[$slotWaktu] ?? null;
-        if (!$slot) return 0;
-
-        $start = Carbon::parse($tanggal . ' ' . $slot['start']);
+        $start = Carbon::parse($tanggalMulai); // Sudah mengandung waktu yang benar
         $end = Carbon::parse($waktuSelesai);
 
         return max(1, ceil($end->diffInHours($start)));
     }
-
     public function updateStatus(Request $request, PenyewaanStadion $booking, string $status)
     {
         $allowedStatuses = ['Menunggu', 'Diterima', 'Ditolak', 'Selesai'];
@@ -281,7 +265,7 @@ class PenyewaanStadionController extends Controller
         return view('penyewaan-stadion.User.Pembayaran', compact('booking'));
     }
 
-            public function getKetersediaan(Request $request)
+    public function getKetersediaan(Request $request)
     {
         $stadionId = $request->input('stadion_id');
         $slotWaktu = $request->input('slot_waktu');
@@ -299,12 +283,12 @@ class PenyewaanStadionController extends Controller
             ->get();
 
         $data = [];
-        $fullyBookedDates = []; // Tanggal yang sudah full-day atau kedua slot terisi
-        $partiallyBookedDates = []; // Tanggal yang salah satu slot terisi
+        $fullyBookedDates = [];
+        $partiallyBookedDates = [];
 
         foreach ($bookings as $booking) {
             $start = Carbon::parse($booking->tanggal_mulai);
-            $end = Carbon::parse($booking->tanggal_selesai);
+            $end = Carbon::parse($booking->waktu_selesai);
 
             for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
                 $dateStr = $date->toDateString();
@@ -317,10 +301,8 @@ class PenyewaanStadionController extends Controller
                     ];
                 }
 
-                // Tandai slot yang sudah dipesan
                 $data[$dateStr][$booking->kondisi] = true;
 
-                // Jika full-day dipesan, tandai semua slot
                 if ($booking->kondisi === 'full-day') {
                     $data[$dateStr]['pagi-siang'] = true;
                     $data[$dateStr]['siang-sore'] = true;
@@ -328,21 +310,17 @@ class PenyewaanStadionController extends Controller
             }
         }
 
-        // Cari tanggal yang sudah penuh
         foreach ($data as $date => $slots) {
-            // Jika full-day sudah dipesan
             if ($slots['full-day']) {
                 $fullyBookedDates[] = $date;
                 continue;
             }
             
-            // Jika kedua slot pagi dan sore sudah dipesan
             if ($slots['pagi-siang'] && $slots['siang-sore']) {
                 $fullyBookedDates[] = $date;
                 continue;
             }
             
-            // Jika salah satu slot sudah dipesan
             if ($slots['pagi-siang'] || $slots['siang-sore']) {
                 $partiallyBookedDates[] = [
                     'date' => $date,

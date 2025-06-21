@@ -10,19 +10,28 @@ class PenyewaanStadion extends Model
         'user_id',
         'stadion_id',
         'tanggal_mulai',
-        'tanggal_selesai',
-        'durasi',                   // ✅ Tambahkan baris ini
-        'slot_waktu',               // ✅ Juga tambahkan jika ingin tersimpan
+        'durasi_hari', // tambahkan ini
+        'durasi_jam',  // tambahkan ini
+        'slot_waktu',
         'kondisi',
-        'catatan_tambahan',
+        'harga',
         'bukti_pembayaran',
         'status',
-        'harga',
-        'waktu_selesai',
-        
+        'catatan_tambahan',
+        'waktu_selesai'
     ];
 
+    // Accessor untuk kondisi
+    public function getKondisiAttribute()
+    {
+        return [
+            1 => 'pagi-siang',
+            2 => 'siang-sore',
+            3 => 'full-day'
+        ][$this->slot_waktu];
+    }
 
+    // Relasi
     public function user()
     {
         return $this->belongsTo(User::class);

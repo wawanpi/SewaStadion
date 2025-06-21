@@ -96,6 +96,14 @@
                             </div>
                         </div>
 
+                        {{-- Total Jam --}}
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Total Jam</label>
+                            <div class="mt-1 p-2 bg-gray-50 rounded-md border border-gray-200">
+                                <p id="total_jam" class="text-sm font-medium text-blue-600">0 jam</p>
+                            </div>
+                        </div>
+
                         {{-- Catatan Tambahan --}}
                         <div>
                             <label for="catatan_tambahan" class="block text-sm font-medium text-gray-700 mb-1">Catatan Tambahan</label>
@@ -201,7 +209,7 @@
             return 0;
         }
 
-        function fetchHarga() {
+       function fetchHarga() {
             const stadion_id = $('#stadion_id').val();
             const slot_waktu = $('#slot_waktu').val();
             const total_hari = hitungTanggalSelesai();
@@ -220,11 +228,13 @@
                         durasi: total_hari,
                     },
                     success: function (response) {
-                        const harga = response.harga || response.total_harga || 0;
+                        const harga = response.total_harga || 0;
                         $('.harga-text').text('Rp ' + new Intl.NumberFormat('id-ID').format(harga));
+                        $('#input_harga').val(harga); // Update hidden input
                     },
                     error: function () {
                         $('.harga-text').text('Rp 0');
+                        $('#input_harga').val(0);
                     },
                     complete: function () {
                         $('#loadingHarga').addClass('hidden');
@@ -232,10 +242,10 @@
                 });
             } else {
                 $('.harga-text').text('Rp 0');
+                $('#input_harga').val(0);
                 $('#loadingHarga').addClass('hidden');
             }
         }
-
         $(document).ready(function () {
             fp = flatpickr("#tanggal_mulai", {
                 dateFormat: "Y-m-d",
@@ -284,5 +294,28 @@
             fetchHarga();
             fetchKetersediaan();
         });
+        function updateDurasiJam() {
+            const slotWaktu = $('#slot_waktu').val();
+            const durasiHari = parseInt($('#durasi_hari').val()) || 0;
+            
+            let jamPerHari = 0;
+            switch (slotWaktu) {
+                case '1': jamPerHari = 6; break; // Pagi-siang 6 jam
+                case '2': jamPerHari = 6; break; // Siang-sore 6 jam (diperbaiki dari 5)
+                case '3': jamPerHari = 24; break;
+            }
+            
+            const totalJam = jamPerHari * durasiHari;
+            $('#total_jam').text(totalJam + ' jam');
+        }
+
+        // Panggil fungsi ini saat slot atau durasi berubah
+        $('#slot_waktu, #durasi_hari').on('change', function() {
+            updateDurasiJam();
+            fetchHarga();
+        });
+
+        // Panggil saat pertama kali load
+        updateDurasiJam();
     </script>
 </x-app-layout>
