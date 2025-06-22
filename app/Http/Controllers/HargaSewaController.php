@@ -12,9 +12,23 @@ class HargaSewaController extends Controller
     private $kondisiList = ['pagi-siang', 'siang-sore', 'full-day'];
 
     // Menampilkan daftar harga sewa dengan relasi stadion, paginasi 10 per halaman
-    public function index()
+    public function index(Request $request)
     {
-        $harga_sewas = HargaSewa::with('stadion')->latest()->paginate(10);
+        $query = HargaSewa::with('stadion');
+
+        // Fitur pencarian
+        if ($search = $request->input('search')) {
+            $query->where(function($q) use ($search) {
+                $q->whereHas('stadion', function($q) use ($search) {
+                    $q->where('nama', 'like', "%{$search}%");
+                })
+                ->orWhere('kondisi', 'like', "%{$search}%")
+                ->orWhere('harga', 'like', "%{$search}%")
+                ->orWhere('keterangan', 'like', "%{$search}%");
+            });
+        }
+
+        $harga_sewas = $query->latest()->paginate(10);
         return view('harga-sewa.index', compact('harga_sewas'));
     }
 

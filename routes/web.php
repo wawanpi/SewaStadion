@@ -6,7 +6,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PenyewaanStadionController;
 use App\Http\Controllers\HargaSewaController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TiketController; 
 
 Route::get('/', function () {
     return view('welcome');
@@ -42,8 +41,6 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     // **Tambahan route AJAX untuk hitung harga sewa**
     // routes/web.php
     Route::post('/penyewaan-stadion/hitung-harga', [PenyewaanStadionController::class, 'hitungHargaTotal'])->name('penyewaan-stadion.hitung-harga');
-    //Iket
-    Route::get('/tiket/{id}/pdf', [TiketController::class, 'downloadTiket'])->name('tiket.download');
     //Pembayaran
     Route::get('/penyewaan-stadion/pembayaran', [PenyewaanStadionController::class, 'showPembayaran'])
     ->name('penyewaan.pembayaran');
@@ -63,6 +60,12 @@ Route::middleware(['auth', 'admin'])->prefix('dashboard')->group(function () {
     // User management
     Route::get('/user', [UserController::class, 'index'])->name('user.index');
 
+    // User management (complete CRUD with additional features)
+    Route::resource('users', UserController::class)->except(['show', 'edit', 'update']);
+    Route::patch('/users/{user}/toggle-admin', [UserController::class, 'toggleAdmin'])->name('users.toggle-admin');
+    Route::patch('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('users.toggle-active');
+
+
     // Admin routes for approving/rejecting booking
     Route::get('/admin/penyewaan-stadion', [PenyewaanStadionController::class, 'adminIndex'])->name('admin.penyewaan.index');
     Route::get('/admin/penyewaan-stadion/{booking}', [PenyewaanStadionController::class, 'show'])->name('admin.penyewaan.show');
@@ -74,5 +77,4 @@ Route::middleware(['auth', 'admin'])->prefix('dashboard')->group(function () {
     Route::patch('/penyewaan-stadion/{booking}/finish', [PenyewaanStadionController::class, 'finish'])->name('penyewaan_stadion.finish');
 });
     // routes/web.php (sudah kamu punya)
-    Route::get('/tiket/{id}/pdf', [TiketController::class, 'downloadTiket'])->name('tiket.download');
 require __DIR__.'/auth.php';

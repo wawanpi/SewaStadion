@@ -9,9 +9,16 @@ use Illuminate\Support\Facades\Storage;
 class StadionController extends Controller
 {
     // Tampilkan semua data stadion
-    public function index()
+    public function index(Request $request)
     {
-        $stadions = Stadion::all();
+        $query = Stadion::query();
+
+        if ($search = $request->input('search')) {
+            $query->where('nama', 'like', "%{$search}%")
+                ->orWhere('lokasi', 'like', "%{$search}%");
+        }
+
+        $stadions = $query->latest()->paginate(10); // Sesuaikan jumlah item per halaman
         return view('stadion.index', compact('stadions'));
     }
 

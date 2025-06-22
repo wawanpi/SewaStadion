@@ -32,7 +32,7 @@
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Sewa</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durasi</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi <span class="text-xs font-normal">(Detail/PDF/Hapus)</span></th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi <span class="text-xs font-normal">(PDF)</span></th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -81,23 +81,19 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <div class="flex space-x-2">
-                                            <a href="#" class="text-blue-600 hover:text-blue-900">Detail</a>
-                                            @if($booking->status === 'Selesai')
-                                            <a href="{{ route('penyewaan-stadion.cetak-tiket-pdf', $booking->id) }}" 
-                                               class="text-green-600 hover:text-green-900 flex items-center">
-                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                                                </svg>
-                                                PDF
-                                            </a>
-                                            @endif
-                                            
-                                            <form action="{{ route('penyewaan-stadion.destroy', $booking->id) }}" method="POST" onsubmit="return confirm('Yakin hapus booking ini?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
-                                            </form>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                <div class="flex space-x-2">
+                                                    @if($booking->status === 'Selesai')
+                                                    <a href="{{ route('penyewaan-stadion.cetak-tiket-pdf', $booking->id) }}" 
+                                                    class="text-green-600 hover:text-green-900 flex items-center">
+                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                                        </svg>
+                                                        PDF
+                                                    </a>
+                                                    @endif
+                                                </div>
+                                            </td>
                                         </div>
                                     </td>
                                 </tr>
@@ -114,7 +110,7 @@
                     <h3 class="mt-2 text-lg font-medium text-gray-900">Belum ada booking</h3>
                     <p class="mt-1 text-sm text-gray-500">Anda belum memiliki booking penyewaan stadion.</p>
                     <div class="mt-6">
-                        <a href="{{ route('penyewaan_stadion.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <a href="{{ route('penyewaan-stadion.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             Buat Booking Baru
                         </a>
                     </div>
