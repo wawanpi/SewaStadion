@@ -34,7 +34,9 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::post('/penyewaan/{booking}/upload-bukti', [PenyewaanStadionController::class, 'uploadBuktiPembayaran'])->name('penyewaan.uploadBukti');
      // Updated availability route
     Route::get('/penyewaan-stadion/ketersediaan', [PenyewaanStadionController::class, 'getKetersediaan'])->name('penyewaan-stadion.ketersediaan');
-
+    Route::get('/penyewaan-stadion/{id}/cetak-tiket-pdf', [PenyewaanStadionController::class, 'cetakTiketPdf'])
+    ->name('penyewaan-stadion.cetak-tiket-pdf')
+    ->middleware('auth');
 
 
     // **Tambahan route AJAX untuk hitung harga sewa**
@@ -68,7 +70,7 @@ Route::middleware(['auth', 'admin'])->prefix('dashboard')->group(function () {
     Route::patch('/admin/penyewaan-stadion/{booking}/reject', [PenyewaanStadionController::class, 'reject'])->name('admin.penyewaan.reject');
 
     // Penyewaan stadion management
-    Route::get('/daftar-penyewaan-stadion', [PenyewaanStadionController::class, 'index'])->name('penyewaan-stadion.index');
+    Route::get('/daftar-penyewaan-stadion', [PenyewaanStadionController::class, 'adminIndex'])->name('penyewaan-stadion.index');
     Route::patch('/penyewaan-stadion/{booking}/finish', [PenyewaanStadionController::class, 'finish'])->name('penyewaan_stadion.finish');
 });
     // routes/web.php (sudah kamu punya)

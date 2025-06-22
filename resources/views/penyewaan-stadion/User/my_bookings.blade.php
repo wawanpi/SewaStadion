@@ -7,14 +7,20 @@
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if(session('success'))
-                <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-lg flex items-center">
-                    <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                    </svg>
-                    <span>{{ session('success') }}</span>
-                </div>
-            @endif
+                    @if(session('success'))
+                        <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-lg">
+                            <p>{{ session('success') }}</p>
+                            @if(session()->has('download_link'))
+                                <a href="{{ session('download_link') }}" 
+                                class="mt-2 inline-flex items-center text-green-700 hover:text-green-900 font-medium">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                    </svg>
+                                    Download Tiket Sekarang
+                                </a>
+                            @endif
+                        </div>
+                    @endif
 
             @if($bookings->count())
                 <div class="bg-white shadow-sm rounded-lg overflow-hidden">
@@ -26,7 +32,7 @@
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Sewa</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durasi</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi <span class="text-xs font-normal">(Detail/PDF/Hapus)</span></th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -44,22 +50,31 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($booking->tanggal_sewa)->translatedFormat('d F Y') }}</div>
+                                        <div class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($booking->tanggal_mulai)->translatedFormat('d F Y') }}</div>
+                                        <div class="text-sm text-gray-500">
+                                            @if($booking->slot_waktu == 1)
+                                                06:00 - 12:00
+                                            @elseif($booking->slot_waktu == 2)
+                                                13:00 - 19:00
+                                            @else
+                                                00:00 - 23:59
+                                            @endif
+                                        </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                            {{ $booking->durasi }} hari
+                                            {{ $booking->durasi_hari }} hari ({{ $booking->durasi_jam }} jam)
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @php
                                             $statusColors = [
-                                                'pending' => 'bg-yellow-100 text-yellow-800',
-                                                'confirmed' => 'bg-green-100 text-green-800',
-                                                'cancelled' => 'bg-red-100 text-red-800',
-                                                'completed' => 'bg-purple-100 text-purple-800'
+                                                'Menunggu' => 'bg-yellow-100 text-yellow-800',
+                                                'Diterima' => 'bg-green-100 text-green-800',
+                                                'Ditolak' => 'bg-red-100 text-red-800',
+                                                'Selesai' => 'bg-purple-100 text-purple-800'
                                             ];
-                                            $color = $statusColors[strtolower($booking->status)] ?? 'bg-gray-100 text-gray-800';
+                                            $color = $statusColors[$booking->status] ?? 'bg-gray-100 text-gray-800';
                                         @endphp
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $color }}">
                                             {{ $booking->status }}
@@ -68,6 +83,16 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <div class="flex space-x-2">
                                             <a href="#" class="text-blue-600 hover:text-blue-900">Detail</a>
+                                            @if($booking->status === 'Selesai')
+                                            <a href="{{ route('penyewaan-stadion.cetak-tiket-pdf', $booking->id) }}" 
+                                               class="text-green-600 hover:text-green-900 flex items-center">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                                </svg>
+                                                PDF
+                                            </a>
+                                            @endif
+                                            
                                             <form action="{{ route('penyewaan-stadion.destroy', $booking->id) }}" method="POST" onsubmit="return confirm('Yakin hapus booking ini?')">
                                                 @csrf
                                                 @method('DELETE')

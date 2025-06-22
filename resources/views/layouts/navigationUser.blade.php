@@ -19,11 +19,11 @@
                     <x-nav-link :href="route('penyewaan-stadion.create')" :active="request()->routeIs('penyewaan-stadion.create')" class="text-gray-800 hover:text-gray-600 hover:border-gray-500">
                         {{ __('Pemesanan') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('penyewaan_stadion.lihat_jadwal')" :active="request()->routeIs('penyewaan-stadion.index')" class="text-gray-800 hover:text-gray-600 hover:border-gray-500">
-                        {{ __('Jadwal') }}
-                    </x-nav-link>
                     <x-nav-link :href="route('penyewaan.pembayaran')" :active="request()->routeIs('penyewaan.pembayaran')" class="text-gray-800 hover:text-gray-600 hover:border-gray-500">
                         {{ __('Pembayaran') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('penyewaan-stadion.my')" :active="request()->routeIs('penyewaan-stadion.my')" class="text-gray-800 hover:text-gray-600 hover:border-gray-500">
+                        {{ __('Riwayat Pesanan') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -96,11 +96,11 @@
             <x-responsive-nav-link :href="route('penyewaan-stadion.create')" :active="request()->routeIs('penyewaan-stadion.create')" class="block px-3 py-2 rounded-md text-base font-medium">
                 {{ __('Pemesanan') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('penyewaan_stadion.lihat_jadwal')" :active="request()->routeIs('penyewaan-stadion.index')" class="block px-3 py-2 rounded-md text-base font-medium">
-                {{ __('Jadwal') }}
-            </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('penyewaan.pembayaran')" :active="request()->routeIs('penyewaan.pembayaran')" class="block px-3 py-2 rounded-md text-base font-medium">
                 {{ __('Pembayaran') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('penyewaan-stadion.my')" :active="request()->routeIs('penyewaan-stadion.my')" class="block px-3 py-2 rounded-md text-base font-medium">
+                {{ __('Riwayat Pesanan') }}
             </x-responsive-nav-link>
         </div>
         

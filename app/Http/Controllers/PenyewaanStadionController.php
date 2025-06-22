@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PenyewaanStadionController extends Controller
 {
@@ -18,20 +20,40 @@ class PenyewaanStadionController extends Controller
         3 => ['start' => '00:00', 'end' => '23:59'], // Full day (24 jam)
     ];
 
-    public function index()
+    public function adminIndex(Request $request)
     {
-        // Ubah dari get() ke paginate()
-        $penyewaanStadions = PenyewaanStadion::with(['stadion:id,nama', 'user:id,name'])
+        $query = PenyewaanStadion::with(['stadion:id,nama', 'user:id,name'])
             ->select([
                 'id', 'user_id', 'stadion_id', 'tanggal_mulai', 'slot_waktu',
                 'waktu_selesai', 'durasi_hari', 'durasi_jam', 'kondisi',
                 'harga', 'bukti_pembayaran', 'status', 'catatan_tambahan',
                 'created_at'
-            ])
-            ->latest()
-            ->paginate(10); // Ganti get() dengan paginate()
-            
-        return view('penyewaan-stadion.admin.adminindex', compact('penyewaanStadions'));
+            ]);
+        
+        // Filter berdasarkan status
+        if ($request->has('status') && $request->status != 'Semua Status') {
+            $query->where('status', $request->status);
+        }
+        
+        // Pencarian berdasarkan nama penyewa
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->whereHas('user', function($q) use ($search) {
+                $q->where('name', 'like', "%$search%");
+            });
+        }
+        
+        $penyewaanStadions = $query->latest()->paginate(10);
+        
+        // Hitung jumlah per status untuk statistik
+        $counts = [
+            'menunggu' => PenyewaanStadion::where('status', 'Menunggu')->count(),
+            'diterima' => PenyewaanStadion::where('status', 'Diterima')->count(),
+            'ditolak' => PenyewaanStadion::where('status', 'Ditolak')->count(),
+            'selesai' => PenyewaanStadion::where('status', 'Selesai')->count(),
+        ];
+        
+        return view('penyewaan-stadion.admin.adminindex', compact('penyewaanStadions', 'counts'));
     }
 
     public function create(Request $request)
@@ -355,5 +377,26 @@ class PenyewaanStadionController extends Controller
             'fully_booked_dates' => $fullyBookedDates,
             'partially_booked_dates' => $partiallyBookedDates
         ]);
+    }
+
+    public function cetakTiketPdf($id)
+    {
+        $booking = PenyewaanStadion::with(['stadion', 'user'])
+            ->where('user_id', Auth::id())
+            ->findOrFail($id);
+
+        // Hanya boleh cetak jika status Selesai
+        if ($booking->status !== 'Selesai') {
+            abort(403, 'Tiket hanya bisa dicetak untuk pesanan yang sudah selesai');
+        }
+
+        $qrCode = QrCode::size(100)->generate('TiketID:' . $booking->id);
+
+        $pdf = Pdf::loadView('penyewaan-stadion.User.tiket-pdf', [
+            'booking' => $booking,
+            'qrCode' => $qrCode
+        ]);
+
+        return $pdf->download('tiket-stadion-' . $booking->id . '.pdf');
     }
 }
