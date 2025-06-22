@@ -124,7 +124,8 @@
                                 <p class="text-xs text-gray-500">Mulai dari</p>
                                 <p class="text-xl font-bold text-gray-900">Rp {{ number_format(100000, 0, ',', '.') }}<span class="text-sm font-normal text-gray-500">/jam</span></p>
                             </div>
-                            <a href="#" class="relative overflow-hidden group bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-3 rounded-lg font-bold shadow-lg transition-all duration-300">
+                            <a href="{{ route('penyewaan-stadion.create', ['stadion_id' => $stadion->id]) }}" 
+                            class="relative overflow-hidden group bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-3 rounded-lg font-bold shadow-lg transition-all duration-300">
                                 <span class="relative z-10">Booking Sekarang</span>
                                 <span class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
                             </a>

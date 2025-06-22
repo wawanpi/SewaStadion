@@ -63,6 +63,7 @@ Route::middleware(['auth', 'admin'])->prefix('dashboard')->group(function () {
 
     // Admin routes for approving/rejecting booking
     Route::get('/admin/penyewaan-stadion', [PenyewaanStadionController::class, 'adminIndex'])->name('admin.penyewaan.index');
+    Route::get('/admin/penyewaan-stadion/{booking}', [PenyewaanStadionController::class, 'show'])->name('admin.penyewaan.show');
     Route::patch('/admin/penyewaan-stadion/{booking}/approve', [PenyewaanStadionController::class, 'approve'])->name('admin.penyewaan.approve');
     Route::patch('/admin/penyewaan-stadion/{booking}/reject', [PenyewaanStadionController::class, 'reject'])->name('admin.penyewaan.reject');
 

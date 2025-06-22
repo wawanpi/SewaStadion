@@ -44,13 +44,14 @@
                             <div class="col-span-2">
                                 <label for="stadion_id" class="block text-sm font-medium text-gray-700 mb-1">Stadion</label>
                                 <select name="stadion_id" id="stadion_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md shadow-sm" required>
-                                    <option value="">-- Pilih Stadion --</option>
-                                    @foreach ($stadions as $stadion)
-                                        <option value="{{ $stadion->id }}" {{ old('stadion_id') == $stadion->id ? 'selected' : '' }}>
-                                            {{ $stadion->nama }} - {{ $stadion->lokasi }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <option value="">-- Pilih Stadion --</option>
+                                @foreach ($stadions as $stadion)
+                                <option value="{{ $stadion->id }}" 
+                                    @selected(old('stadion_id', $selectedStadionId ?? null) == $stadion->id)>
+                                    {{ $stadion->nama }} - {{ $stadion->lokasi }}
+                                </option>
+                                @endforeach
+                            </select>
                             </div>
                             
                             {{-- Slot Waktu --}}

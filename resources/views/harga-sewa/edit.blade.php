@@ -38,7 +38,17 @@
                             </select>
                             <x-input-error class="mt-2" :messages="$errors->get('kondisi')" />
                         </div>
-
+                        <!-- Keterangan -->
+                        <div class="mb-4">
+                            <x-input-label for="keterangan" :value="__('Keterangan')" />
+                            <textarea
+                                id="keterangan"
+                                name="keterangan"
+                                rows="3"
+                                class="block w-full mt-1 rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
+                                placeholder="Keterangan harga sewa...">{{ old('keterangan', $harga_sewa->keterangan) }}</textarea>
+                            <x-input-error class="mt-2" :messages="$errors->get('keterangan')" />
+                        </div>
                         <!-- Harga -->
                         <div class="mb-4">
                             <x-input-label for="harga" :value="__('Harga (Rp)')" />
@@ -66,4 +76,28 @@
             </div>
         </div>
     </div>
+    <script>
+        const kondisiSelect = document.getElementById('kondisi');
+        const keteranganTextarea = document.getElementById('keterangan');
+
+        const keteranganDefault = {
+            'pagi-siang': 'Harga berlaku untuk jam pagi hingga siang (06-12 WIB).',
+            'siang-sore': 'Harga berlaku untuk jam siang hingga sore (13-18 WIB).',
+            'full-day': 'Harga berlaku untuk satu hari penuh.'
+        };
+
+        kondisiSelect.addEventListener('change', function () {
+            const current = keteranganTextarea.value.trim();
+            const selected = this.value;
+            if (!current) {
+                keteranganTextarea.value = keteranganDefault[selected] || '';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (kondisiSelect.value && !keteranganTextarea.value.trim()) {
+                keteranganTextarea.value = keteranganDefault[kondisiSelect.value] || '';
+            }
+        });
+    </script>
 </x-app-layout>

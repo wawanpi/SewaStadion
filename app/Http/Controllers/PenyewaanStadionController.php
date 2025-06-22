@@ -20,13 +20,28 @@ class PenyewaanStadionController extends Controller
 
     public function index()
     {
-        $penyewaanStadions = PenyewaanStadion::with(['stadion', 'user'])->latest()->get();
+        // Ubah dari get() ke paginate()
+        $penyewaanStadions = PenyewaanStadion::with(['stadion:id,nama', 'user:id,name'])
+            ->select([
+                'id', 'user_id', 'stadion_id', 'tanggal_mulai', 'slot_waktu',
+                'waktu_selesai', 'durasi_hari', 'durasi_jam', 'kondisi',
+                'harga', 'bukti_pembayaran', 'status', 'catatan_tambahan',
+                'created_at'
+            ])
+            ->latest()
+            ->paginate(10); // Ganti get() dengan paginate()
+            
         return view('penyewaan-stadion.admin.adminindex', compact('penyewaanStadions'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $stadions = Stadion::all();
+        $stadionId = $request->query('stadion_id');
+        
+        $stadions = $stadionId 
+            ? Stadion::where('id', $stadionId)->get()
+            : Stadion::all();
+
         $slots = [
             1 => 'Pagi (06:00 - 12:00)',
             2 => 'Sore (13:00 - 18:00)',
@@ -38,7 +53,12 @@ class PenyewaanStadionController extends Controller
             ->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))
             ->toArray();
 
-        return view('penyewaan-stadion.User.BuatPesanan', compact('stadions', 'slots', 'bookedDates'));
+        return view('penyewaan-stadion.User.BuatPesanan', [
+            'stadions' => $stadions,
+            'slots' => $slots,
+            'bookedDates' => $bookedDates,
+            'selectedStadionId' => $stadionId // Tambahkan ini
+        ]);
     }
 
     public function store(Request $request)

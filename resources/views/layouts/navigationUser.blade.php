@@ -16,6 +16,9 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="text-gray-800 hover:text-gray-600 hover:border-gray-500">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('penyewaan-stadion.create')" :active="request()->routeIs('penyewaan-stadion.create')" class="text-gray-800 hover:text-gray-600 hover:border-gray-500">
+                        {{ __('Pemesanan') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('penyewaan_stadion.lihat_jadwal')" :active="request()->routeIs('penyewaan-stadion.index')" class="text-gray-800 hover:text-gray-600 hover:border-gray-500">
                         {{ __('Jadwal') }}
                     </x-nav-link>
@@ -89,6 +92,9 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="block px-3 py-2 rounded-md text-base font-medium">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('penyewaan-stadion.create')" :active="request()->routeIs('penyewaan-stadion.create')" class="block px-3 py-2 rounded-md text-base font-medium">
+                {{ __('Pemesanan') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('penyewaan_stadion.lihat_jadwal')" :active="request()->routeIs('penyewaan-stadion.index')" class="block px-3 py-2 rounded-md text-base font-medium">
                 {{ __('Jadwal') }}
