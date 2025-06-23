@@ -1,24 +1,27 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-2xl text-gray-800 dark:text-gray-200 leading-tight">
-                <i class="fas fa-stadium mr-2"></i>{{ __('Manajemen Stadion') }}
-            </h2>
-        </div>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+@section('content')
+    <div class="pt-20"> <!-- Tambah padding atas lebih besar -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Bagian Header dengan latar belakang -->
+            <div class="mb-6 p-4 rounded-lg bg-gray-800 dark:bg-gray-200 shadow-md">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                    <h2 class="text-2xl font-bold text-white dark:text-gray-900 mb-2 sm:mb-0">
+                        {{ __('Manajemen Stadion & Fasilitas ') }}
+                    </h2>
+                </div>
+            </div>
+
             <!-- Card Container -->
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-2xl">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
                 <!-- Card Header with Search and Actions -->
-                <div class="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <div class="p-6 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <!-- Search Form -->
                         <div class="w-full md:w-1/2">
                             <form action="{{ route('stadion.index') }}" method="GET" class="flex items-center gap-2">
                                 <div class="relative flex-grow">
-                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-blue-500 dark:text-blue-400">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500 dark:text-gray-400">
                                         <i class="fas fa-search"></i>
                                     </div>
                                     <input 
@@ -26,14 +29,14 @@
                                         name="search" 
                                         placeholder="Cari stadion..." 
                                         value="{{ request('search') }}"
-                                        class="block w-full p-3 pl-10 text-sm text-gray-900 border border-gray-300 rounded-xl bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 shadow-sm transition duration-200"
+                                        class="block w-full p-3 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 shadow-sm transition duration-200"
                                     >
                                 </div>
-                                <button type="submit" class="px-4 py-3 text-sm font-medium text-white bg-blue-600 rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-700 shadow-md transition duration-200 flex items-center gap-2">
+                                <button type="submit" class="px-4 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-700 shadow-md transition duration-200 flex items-center gap-2">
                                     <i class="fas fa-filter"></i> Filter
                                 </button>
                                 @if(request('search'))
-                                    <a href="{{ route('stadion.index') }}" class="px-4 py-3 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-500 shadow-sm transition duration-200 flex items-center gap-2">
+                                    <a href="{{ route('stadion.index') }}" class="px-4 py-3 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-500 shadow-sm transition duration-200 flex items-center gap-2">
                                         <i class="fas fa-sync-alt"></i> Reset
                                     </a>
                                 @endif
@@ -41,9 +44,9 @@
                         </div>
 
                         <!-- Create Button -->
-                        <x-create-button href="{{ route('stadion.create') }}" class="px-5 py-3 rounded-xl shadow-md">
+                        <a href="{{ route('stadion.create') }}" class="px-5 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 shadow-md transition duration-200 flex items-center gap-2">
                             <i class="fas fa-plus mr-2"></i> Tambah Stadion
-                        </x-create-button>
+                        </a>
                     </div>
                 </div>
 
@@ -73,16 +76,16 @@
                     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
                             <tr>
-                                <th scope="col" class="px-6 py-4 font-medium">Nama Stadion</th>
-                                <th scope="col" class="px-6 py-4 font-medium">Lokasi</th>
-                                <th scope="col" class="px-6 py-4 font-medium">Deskripsi</th>
-                                <th scope="col" class="px-6 py-4 font-medium">Foto</th>
-                                <th scope="col" class="px-6 py-4 font-medium text-right">Aksi</th>
+                                <th scope="col" class="px-6 py-3 font-medium">Nama Stadion / Fasilitas</th>
+                                <th scope="col" class="px-6 py-3 font-medium">Lokasi</th>
+                                <th scope="col" class="px-6 py-3 font-medium">Deskripsi</th>
+                                <th scope="col" class="px-6 py-3 font-medium">Foto</th>
+                                <th scope="col" class="px-6 py-3 font-medium text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($stadions as $stadion)
-                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-gray-700 transition duration-150">
+                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150">
                                     <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                         <div class="flex items-center">
                                             <i class="fas fa-stadium text-blue-500 mr-3"></i>
@@ -194,10 +197,6 @@
             overflow: hidden;
         }
         
-        .shadow-xl {
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        
         .hover\:scale-105:hover {
             transform: scale(1.05);
         }
@@ -208,4 +207,4 @@
             transition-duration: 200ms;
         }
     </style>
-</x-app-layout>
+@endsection

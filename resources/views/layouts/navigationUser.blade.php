@@ -1,106 +1,116 @@
-<nav x-data="{ open: false }" class="bg-white border-b shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-            <!-- Logo -->
-            <div class="flex items-center space-x-3">
-                <a href="{{ route('dashboard') }}" class="flex items-center">
-                    <x-application-logo class="h-8 w-auto text-green-600" />
-                    <span class="text-lg font-bold text-gray-800">AYO Sewa</span>
-                </a>
-            </div>
+<nav x-data="{ open: false }" class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 fixed w-full z-20 top-0 left-0">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 relative">
+        <!-- Logo -->
+        <a href="{{ route('dashboard') }}" class="flex items-center space-x-2">
+            <x-application-logo class="h-8 w-auto text-green-600" />
+            <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Stadion Sultan Agung <br> Bantul</span>
+        </a>
 
-            <!-- Desktop Navigation -->
-            <div class="hidden md:flex space-x-4">
-                <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'bg-green-500 text-white' : 'text-gray-700 hover:bg-green-500 hover:text-white' }} px-3 py-2 rounded-md text-sm font-medium">
-                    Dashboard
-                </a>
-                <a href="{{ route('penyewaan-stadion.create') }}" class="{{ request()->routeIs('penyewaan-stadion.create') ? 'bg-green-500 text-white' : 'text-gray-700 hover:bg-green-500 hover:text-white' }} px-3 py-2 rounded-md text-sm font-medium">
-                    Pemesanan
-                </a>
-                <a href="{{ route('penyewaan.pembayaran') }}" class="{{ request()->routeIs('penyewaan.pembayaran') ? 'bg-green-500 text-white' : 'text-gray-700 hover:bg-green-500 hover:text-white' }} px-3 py-2 rounded-md text-sm font-medium">
-                    Pembayaran
-                </a>
-                <a href="{{ route('penyewaan-stadion.my') }}" class="{{ request()->routeIs('penyewaan-stadion.my') ? 'bg-green-500 text-white' : 'text-gray-700 hover:bg-green-500 hover:text-white' }} px-3 py-2 rounded-md text-sm font-medium">
-                    Riwayat Pesanan
-                </a>
-            </div>
-
-            <!-- User Dropdown -->
-            <div class="hidden md:flex items-center space-x-4 relative" x-data="{ dropdownOpen: false }">
-                <button @click="dropdownOpen = !dropdownOpen" class="flex items-center space-x-2 focus:outline-none">
-                    <div class="h-8 w-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center font-bold">
-                        {{ substr(Auth::user()->name, 0, 1) }}
-                    </div>
-                    <span class="text-sm text-gray-800 font-medium">{{ Auth::user()->name }}</span>
-                    <svg class="h-4 w-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                    </svg>
-                </button>
-
-                <!-- Dropdown menu -->
-                <div x-show="dropdownOpen" @click.away="dropdownOpen = false" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50">
-                    <div class="px-4 py-2 border-b text-sm">
-                        <div class="font-medium">{{ Auth::user()->name }}</div>
-                        <div class="text-xs text-gray-500">{{ Auth::user()->email }}</div>
-                    </div>
-                    <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            Log Out
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Mobile Menu Button -->
-            <div class="md:hidden">
-                <button @click="open = !open" class="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
-                    <svg class="h-6 w-6 text-gray-600" x-show="!open" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                    <svg class="h-6 w-6 text-gray-600" x-show="open" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex items-center space-x-6 absolute left-1/2 transform -translate-x-1/2">
+            <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'text-amber-600 font-bold' : 'text-gray-800 dark:text-white hover:text-amber-600' }} text-sm">Dashboard</a>
+            <a href="{{ route('penyewaan-stadion.create') }}" class="{{ request()->routeIs('penyewaan-stadion.create') ? 'text-amber-600 font-bold' : 'text-gray-800 dark:text-white hover:text-amber-600' }} text-sm">Pemesanan</a>
+            <a href="{{ route('penyewaan.pembayaran') }}" class="{{ request()->routeIs('penyewaan.pembayaran') ? 'text-amber-600 font-bold' : 'text-gray-800 dark:text-white hover:text-amber-600' }} text-sm">Pembayaran</a>
+            <a href="{{ route('penyewaan-stadion.my') }}" class="{{ request()->routeIs('penyewaan-stadion.my') ? 'text-amber-600 font-bold' : 'text-gray-800 dark:text-white hover:text-amber-600' }} text-sm">Riwayat</a>
         </div>
-    </div>
 
-    <!-- Mobile Navigation -->
-    <div x-show="open" class="md:hidden px-4 pt-2 pb-3 space-y-1">
-        <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'bg-green-500 text-white' : 'text-gray-700 hover:bg-green-500 hover:text-white' }} block px-4 py-2 rounded-md text-base font-medium">
-            Dashboard
-        </a>
-        <a href="{{ route('penyewaan-stadion.create') }}" class="{{ request()->routeIs('penyewaan-stadion.create') ? 'bg-green-500 text-white' : 'text-gray-700 hover:bg-green-500 hover:text-white' }} block px-4 py-2 rounded-md text-base font-medium">
-            Pemesanan
-        </a>
-        <a href="{{ route('penyewaan.pembayaran') }}" class="{{ request()->routeIs('penyewaan.pembayaran') ? 'bg-green-500 text-white' : 'text-gray-700 hover:bg-green-500 hover:text-white' }} block px-4 py-2 rounded-md text-base font-medium">
-            Pembayaran
-        </a>
-        <a href="{{ route('penyewaan-stadion.my') }}" class="{{ request()->routeIs('penyewaan-stadion.my') ? 'bg-green-500 text-white' : 'text-gray-700 hover:bg-green-500 hover:text-white' }} block px-4 py-2 rounded-md text-base font-medium">
-            Riwayat Pesanan
-        </a>
+        <!-- Profil + Dark Mode -->
+        <div class="hidden md:flex items-center space-x-4" x-data="{ dropdownOpen: false }">
+            <!-- Dark Mode Toggle -->
+            <button id="theme-toggle" class="text-gray-600 dark:text-white hover:text-amber-600 dark:hover:text-amber-500 focus:outline-none">
+                <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                </svg>
+                <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zM4 11a1 1 0 100-2H3a1 1 0 000 2h1zm13 0a1 1 0 100-2h-1a1 1 0 100 2h1zm-6 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1z" />
+                </svg>
+            </button>
 
-        <div class="border-t mt-3 pt-3">
-            <div class="flex items-center space-x-3">
-                <div class="h-8 w-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center font-bold">
+            <!-- Profil -->
+            <button @click="dropdownOpen = !dropdownOpen" class="flex items-center space-x-2">
+                <div class="h-8 w-8 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center font-bold">
                     {{ substr(Auth::user()->name, 0, 1) }}
                 </div>
-                <div>
-                    <p class="text-sm font-medium">{{ Auth::user()->name }}</p>
-                    <p class="text-xs text-gray-500">{{ Auth::user()->email }}</p>
+                <span class="text-sm dark:text-white">{{ Auth::user()->name }}</span>
+                <svg class="h-4 w-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+            <div x-show="dropdownOpen" @click.away="dropdownOpen = false" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-2 z-50">
+                <div class="px-4 py-2 border-b text-sm text-gray-800 dark:text-white">
+                    <div class="font-medium">{{ Auth::user()->name }}</div>
+                    <div class="text-xs text-gray-500">{{ Auth::user()->email }}</div>
                 </div>
-            </div>
-            <div class="mt-3 space-y-1">
-                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Profile</a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        Log Out
-                    </button>
+                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Log Out</button>
                 </form>
             </div>
         </div>
+
+        <!-- Mobile Toggle -->
+        <div class="md:hidden">
+            <button @click="open = !open" class="p-2 rounded-lg text-gray-600 dark:text-white focus:ring-2 focus:ring-amber-600">
+                <svg x-show="!open" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                <svg x-show="open" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div x-show="open" class="md:hidden px-4 pt-4 pb-4 space-y-1">
+        <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'text-amber-600 font-semibold' : 'text-gray-700 dark:text-white hover:text-amber-600' }} block text-sm">Dashboard</a>
+        <a href="{{ route('penyewaan-stadion.create') }}" class="{{ request()->routeIs('penyewaan-stadion.create') ? 'text-amber-600 font-semibold' : 'text-gray-700 dark:text-white hover:text-amber-600' }} block text-sm">Pemesanan</a>
+        <a href="{{ route('penyewaan.pembayaran') }}" class="{{ request()->routeIs('penyewaan.pembayaran') ? 'text-amber-600 font-semibold' : 'text-gray-700 dark:text-white hover:text-amber-600' }} block text-sm">Pembayaran</a>
+        <a href="{{ route('penyewaan-stadion.my') }}" class="{{ request()->routeIs('penyewaan-stadion.my') ? 'text-amber-600 font-semibold' : 'text-gray-700 dark:text-white hover:text-amber-600' }} block text-sm">Riwayat</a>
+        <!-- Opsional: Tambah tombol dark mode juga di sini -->
     </div>
 </nav>
+
+<!-- Dark Mode Script -->
+<script>
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const darkIcon = document.getElementById('theme-toggle-dark-icon');
+    const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (
+        localStorage.getItem('color-theme') === 'dark' ||
+        (!('color-theme' in localStorage) &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
+        document.documentElement.classList.add('dark');
+        lightIcon.classList.remove('hidden');
+    } else {
+        document.documentElement.classList.remove('dark');
+        darkIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+        darkIcon.classList.toggle('hidden');
+        lightIcon.classList.toggle('hidden');
+
+        if (localStorage.getItem('color-theme')) {
+            if (localStorage.getItem('color-theme') === 'light') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            }
+        } else {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            }
+        }
+    });
+</script>

@@ -1,15 +1,18 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
+<div class="pt-16"> <!-- Added padding-top to account for fixed navbar -->
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Formulir Penyewaan Stadion</h2>
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-white leading-tight">Formulir Penyewaan Stadion</h2>
     </x-slot>
 
     <div class="py-8">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                     {{-- Flash Success --}}
                     @if (session('success'))
-                        <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded">
+                        <div class="mb-6 p-4 bg-green-50 dark:bg-green-900 border-l-4 border-green-500 dark:border-green-400 text-green-700 dark:text-green-100 rounded">
                             <div class="flex items-center">
                                 <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
@@ -21,7 +24,7 @@
 
                     {{-- Error Message --}}
                     @if ($errors->any())
-                        <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded">
+                        <div class="mb-6 p-4 bg-red-50 dark:bg-red-900 border-l-4 border-red-500 dark:border-red-400 text-red-700 dark:text-red-100 rounded">
                             <div class="flex items-center">
                                 <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
@@ -42,22 +45,22 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {{-- Stadion --}}
                             <div class="col-span-2">
-                                <label for="stadion_id" class="block text-sm font-medium text-gray-700 mb-1">Stadion</label>
-                                <select name="stadion_id" id="stadion_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md shadow-sm" required>
-                                <option value="">-- Pilih Stadion --</option>
-                                @foreach ($stadions as $stadion)
-                                <option value="{{ $stadion->id }}" 
-                                    @selected(old('stadion_id', $selectedStadionId ?? null) == $stadion->id)>
-                                    {{ $stadion->nama }} - {{ $stadion->lokasi }}
-                                </option>
-                                @endforeach
-                            </select>
+                                <label for="stadion_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Stadion</label>
+                                <select name="stadion_id" id="stadion_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm rounded-md shadow-sm dark:bg-gray-700 dark:text-white" required>
+                                    <option value="">-- Pilih Stadion --</option>
+                                    @foreach ($stadions as $stadion)
+                                    <option value="{{ $stadion->id }}" 
+                                        @selected(old('stadion_id', $selectedStadionId ?? null) == $stadion->id)>
+                                        {{ $stadion->nama }} - {{ $stadion->lokasi }}
+                                    </option>
+                                    @endforeach
+                                </select>
                             </div>
                             
                             {{-- Slot Waktu --}}
                             <div>
-                                <label for="slot_waktu" class="block text-sm font-medium text-gray-700 mb-1">Slot Waktu</label>
-                                <select name="slot_waktu" id="slot_waktu" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md shadow-sm" required>
+                                <label for="slot_waktu" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Slot Waktu</label>
+                                <select name="slot_waktu" id="slot_waktu" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm rounded-md shadow-sm dark:bg-gray-700 dark:text-white" required>
                                     <option value="">-- Pilih Slot --</option>
                                     <option value="1" {{ old('slot_waktu') == 1 ? 'selected' : '' }}>Pagi - Siang (06:00 - 12:00)</option>
                                     <option value="2" {{ old('slot_waktu') == 2 ? 'selected' : '' }}>Siang - Sore (12:00 - 18:00)</option>
@@ -66,59 +69,59 @@
                             </div>
                            {{-- Tanggal Mulai --}}
                             <div>
-                                <label for="tanggal_mulai" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai</label>
+                                <label for="tanggal_mulai" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tanggal Mulai</label>
                                 <div class="mt-1 relative rounded-md shadow-sm">
-                                    <input type="text" name="tanggal_mulai" id="tanggal_mulai" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-3 pr-10 py-2 sm:text-sm border-gray-300 rounded-md" required value="{{ old('tanggal_mulai') }}">
+                                    <input type="text" name="tanggal_mulai" id="tanggal_mulai" class="focus:ring-amber-500 focus:border-amber-500 block w-full pl-3 pr-10 py-2 sm:text-sm border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white" required value="{{ old('tanggal_mulai') }}">
                                 </div>
                             </div>
 
                             {{-- Durasi --}}
                             <div>
-                                <label for="durasi_hari" class="block text-sm font-medium text-gray-700 mb-1">Durasi (hari)</label>
-                                <input type="number" name="durasi_hari" id="durasi_hari" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-3 pr-10 py-2 sm:text-sm border-gray-300 rounded-md" min="1" value="{{ old('durasi_hari', 1) }}" required>
-                                <p class="mt-1 text-xs text-gray-500">* Untuk slot selain full day, hanya boleh 1 hari.</p>
+                                <label for="durasi_hari" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Durasi (hari)</label>
+                                <input type="number" name="durasi_hari" id="durasi_hari" class="focus:ring-amber-500 focus:border-amber-500 block w-full pl-3 pr-10 py-2 sm:text-sm border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white" min="1" value="{{ old('durasi_hari', 1) }}" required>
+                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">* Untuk slot selain full day, hanya boleh 1 hari.</p>
                             </div>
 
                             {{-- Tanggal Selesai --}}
                             <input type="hidden" name="tanggal_selesai" id="tanggal_selesai" value="{{ old('tanggal_selesai') }}">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Selesai</label>
-                                <div class="mt-1 p-2 bg-gray-50 rounded-md border border-gray-200">
-                                    <p id="display_tanggal_selesai" class="text-sm text-gray-700">-</p>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tanggal Selesai</label>
+                                <div class="mt-1 p-2 bg-gray-50 dark:bg-gray-700 rounded-md border border-gray-200 dark:border-gray-600">
+                                    <p id="display_tanggal_selesai" class="text-sm text-gray-700 dark:text-gray-300">-</p>
                                 </div>
                             </div>
 
                             {{-- Total Hari --}}
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Total Hari</label>
-                                <div class="mt-1 p-2 bg-gray-50 rounded-md border border-gray-200">
-                                    <p id="total_hari" class="text-sm font-medium text-blue-600">0 hari</p>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Total Hari</label>
+                                <div class="mt-1 p-2 bg-gray-50 dark:bg-gray-700 rounded-md border border-gray-200 dark:border-gray-600">
+                                    <p id="total_hari" class="text-sm font-medium text-amber-600 dark:text-amber-400">0 hari</p>
                                 </div>
                             </div>
                         </div>
 
                         {{-- Total Jam --}}
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Total Jam</label>
-                            <div class="mt-1 p-2 bg-gray-50 rounded-md border border-gray-200">
-                                <p id="total_jam" class="text-sm font-medium text-blue-600">0 jam</p>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Total Jam</label>
+                            <div class="mt-1 p-2 bg-gray-50 dark:bg-gray-700 rounded-md border border-gray-200 dark:border-gray-600">
+                                <p id="total_jam" class="text-sm font-medium text-amber-600 dark:text-amber-400">0 jam</p>
                             </div>
                         </div>
 
                         {{-- Catatan Tambahan --}}
                         <div>
-                            <label for="catatan_tambahan" class="block text-sm font-medium text-gray-700 mb-1">Catatan Tambahan</label>
-                            <textarea name="catatan_tambahan" id="catatan_tambahan" rows="3" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">{{ old('catatan_tambahan') }}</textarea>
+                            <label for="catatan_tambahan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Catatan Tambahan</label>
+                            <textarea name="catatan_tambahan" id="catatan_tambahan" rows="3" class="shadow-sm focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white">{{ old('catatan_tambahan') }}</textarea>
                         </div>
 
                         {{-- Total Harga --}}
-                        <div class="bg-blue-50 p-4 rounded-md border border-blue-100">
+                        <div class="bg-amber-50 dark:bg-gray-700 p-4 rounded-md border border-amber-100 dark:border-gray-600">
                             <div class="flex justify-between items-center">
-                                <span class="text-sm font-medium text-gray-700">Total Harga</span>
+                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Total Harga</span>
                                 <div class="flex items-center">
-                                    <span id="harga_total" class="text-xl font-bold text-blue-600">
+                                    <span id="harga_total" class="text-xl font-bold text-amber-600 dark:text-amber-400">
                                         <span class="harga-text">Rp 0</span> 
-                                        <span id="loadingHarga" class="ml-2 text-sm text-blue-400 hidden">(menghitung...)</span>
+                                        <span id="loadingHarga" class="ml-2 text-sm text-amber-400 dark:text-amber-300 hidden">(menghitung...)</span>
                                     </span>
                                 </div>
                             </div>
@@ -126,7 +129,7 @@
 
                         {{-- Submit --}}
                         <div class="flex justify-end pt-4">
-                            <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                            <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors duration-200">
                                 Ajukan Penyewaan
                             </button>
                         </div>
@@ -319,4 +322,4 @@
         // Panggil saat pertama kali load
         updateDurasiJam();
     </script>
-</x-app-layout>
+@endsection

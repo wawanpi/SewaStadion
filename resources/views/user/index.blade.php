@@ -1,18 +1,21 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-2xl text-gray-800 dark:text-gray-200 leading-tight">
-                <i class="fas fa-users mr-2"></i>{{ __('Manajemen Pengguna') }}
-            </h2>
-        </div>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-6">
+@section('content')
+    <div class="pt-16"> <!-- Added padding-top to account for fixed navbar -->
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Card Container -->
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-xl">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                <!-- Header Section -->
+                <div class="px-6 py-4 bg-light border-b border-gray-200 dark:bg-dark dark:border-gray-700">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">
+                            <i class="fas fa-users mr-2"></i>{{ __('Manajemen Pengguna') }}
+                        </h2>
+                    </div>
+                </div>
+
                 <!-- Search and Create Section -->
-                <div class="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <div class="p-6 bg-light dark:bg-dark border-b border-gray-200 dark:border-gray-700">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <!-- Search Form -->
                         <div class="w-full md:w-1/2">
@@ -30,7 +33,7 @@
                                     >
                                 </div>
                                 <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-700">
-                                    <i class="fas fa-filter mr-1"></i> Filter
+                                    <i class="fas fa-filter mr-1"></i> Cari
                                 </button>
                                 @if(request('search'))
                                     <a href="{{ route('users.index') }}" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-500">
@@ -39,7 +42,6 @@
                                 @endif
                             </form>
                         </div>
-
                     </div>
                 </div>
 
@@ -73,13 +75,12 @@
                                 <th scope="col" class="px-6 py-3">Nama</th>
                                 <th scope="col" class="px-6 py-3">Email</th>
                                 <th scope="col" class="px-6 py-3">Role</th>
-                                <th scope="col" class="px-6 py-3">Status</th>
                                 <th scope="col" class="px-6 py-3 text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($users as $user)
-                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-gray-700">
+                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
                                     <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                         {{ $user->id }}
                                     </td>
@@ -100,17 +101,6 @@
                                         @else
                                             <span class="px-2 py-1 text-xs font-semibold text-white bg-blue-600 rounded-full">
                                                 <i class="fas fa-user mr-1"></i> User
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        @if($user->is_active)
-                                            <span class="px-2 py-1 text-xs font-semibold text-white bg-green-600 rounded-full">
-                                                <i class="fas fa-check-circle mr-1"></i> Aktif
-                                            </span>
-                                        @else
-                                            <span class="px-2 py-1 text-xs font-semibold text-white bg-red-600 rounded-full">
-                                                <i class="fas fa-times-circle mr-1"></i> Nonaktif
                                             </span>
                                         @endif
                                     </td>
@@ -191,4 +181,4 @@
 
     <!-- Include Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-</x-app-layout>
+@endsection

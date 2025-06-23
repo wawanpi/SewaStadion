@@ -1,4 +1,4 @@
-<x-app-layout>
+@extends('layouts.app')
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Edit Harga Sewa') }}
@@ -100,4 +100,5 @@
             }
         });
     </script>
-</x-app-layout>
+@section('content')
+@endsection
