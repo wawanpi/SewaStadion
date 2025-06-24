@@ -7,22 +7,13 @@
                 <div class="mr-auto place-self-center lg:col-span-7">
                     <h1
                         class="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white">
-                        Percayakan furnitur dan dekorasi rumah anda kepada kami</h1>
-                    <p class="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">Jasa
-                        pembuatan furnitur dan dekorasi rumah kustom sesuai keinginan anda</p>
-                    <a href="#"
-                        class="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white dark:text-gray-800 rounded-lg bg-four dark:bg-first">
-                        Belanja Sekarang
-                        <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                    </a>
+                       🎉 Selamat Datang</h1>
+                    <p class="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
+                        Website Resmi Pemesanan Lapangan Stadion Sultan Agung Bantul
+Pesan lapangan stadion dengan mudah, langsung dari pengelola resmi Dikpora Bantul.</p>
                 </div>
                 <div class="lg:mt-0 lg:col-span-5 lg:flex">
-                    <img src="storage/image/stadiun.jpg" alt="mockup" class="rounded-lg shadow-md mx-auto">
+                    <img src="storage/image/agung.jpg" alt="mockup" class="rounded-lg shadow-md mx-auto">
                 </div>
             </div>
         </div>
@@ -37,14 +28,14 @@
                         kami
                         ?
                     </h2>
-                    <p class="mb-4 text-justify">Ini merupakan website penyewan resmi Dikpora Bantul.</p>
+                    <p class="mb-4 text-justify">Ini merupakan website penyewaan resmi milik Dikpora Kabupaten Bantul, memastikan layanan yang terpercaya, efisien, dan profesional.</p>
                 </div>
                 <div class="grid grid-cols-2 gap-4 mt-8">
                     <div
                         class="w-full max-w-sm bg-third transition hover:-translate-y-3 duration-300 delay-150 shadow-xl hover:shadow-amber-500/50 border border-gray-200 rounded dark:border-gray-700">
                         <div class="flex flex-col items-center py-4 px-4">
-                            <img class="w-24 h-24 mb-3" src="storage/image/berkualitas.png" alt="gambar icon berkualitas" />
-                            <h5 class="mb-1 text-xl font-medium text-white">Berkualitas</h5>
+                            <img class="w-24 h-24 mb-3" src="storage\image\image.png" alt="stadion" />
+                            <h5 class="mb-1 text-xl font-medium text-white">Lapangan stadion terawat dan siap pakai</h5>
                         </div>
                     </div>
                     <div
@@ -136,11 +127,8 @@
                                 class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -left-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
                                 1
                             </span>
-                            <h3 class="font-medium leading-tight">Menentukan Produk</h3>
-                            <p class="text-sm text-justify max-w-lg">Pilih produk dari katalog kemudian kustom ukurannya
-                                atau
-                                unggah desain yang
-                                diinginkan melalui jika ingin full custom kemudian dilanjutkan konsultasi via whatsapp.</p>
+                            <h3 class="font-medium leading-tight">Menentukan Pemesanan</h3>
+                            <p class="text-sm text-justify max-w-lg">Silakan pilih jenis fasilitas yang ingin Anda pesan, seperti Lapangan Stadion, Arena Pacuan Kuda, atau fasilitas lainnya.</p>
                         </li>
                         <li class="mb-10 ml-6">
                             <span
@@ -148,12 +136,9 @@
                                 2
                             </span>
                             <h3 class="font-medium leading-tight">Isi Form Pemesanan</h3>
-                            <p class="text-sm text-justify max-w-lg">Jika produk dipilih dari katalog maka mengisi form
-                                data
-                                diri beserta ukuran barang yang diinginkan
-                                sedangkan jika memiliki referensi desain sendiri dapat mengunggah gambar disertai mengisi
-                                form
-                                data diri.
+                            <p class="text-sm text-justify max-w-lg">Setelah memilih fasilitas yang diinginkan, silakan isi form pemesanan.
+
+Jika Anda memilih dari katalog, lengkapi data diri dan tentukan spesifikasi seperti tanggal, waktu, dan durasi pemesanan.
                             </p>
                         </li>
                         <li class="mb-10 ml-6">
@@ -161,45 +146,37 @@
                                 class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -left-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
                                 3
                             </span>
-                            <h3 class="font-medium leading-tight">Pembayaran DP</h3>
-                            <p class="text-sm text-justify max-w-lg">Melakukan pembayaran DP sebesar 50% dari harga yang
-                                sudah
-                                disepakati saat sudah
-                                mengisi form pemesanan atau konsultasi via whatsapp.</p>
+                            <h3 class="font-medium leading-tight">Menunggu Konfirmasi Admin</h3>
+                            <p class="text-sm text-justify max-w-lg">Setelah form dikirim, admin akan meninjau dan mengonfirmasi ketersediaan serta detail pemesanan Anda. Harap menunggu konfirmasi melalui sistem.</p>
                         </li>
                         <li class="mb-10 ml-6">
                             <span
                                 class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -left-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
                                 4
                             </span>
-                            <h3 class="font-medium leading-tight">Unggah Bukti Pembayaran</h3>
-                            <p class="text-sm text-justify max-w-lg">Setelah melakukan pembayaran DP, dapat mengunggah
-                                bukti
-                                pembayaran untuk
-                                dikonfirmasi admin.</p>
+                            <h3 class="font-medium leading-tight">Pembayaran</h3>
+                            <p class="text-sm text-justify max-w-lg">Jika pemesanan disetujui, Anda dapat melakukan pembayaran, lalu unggah bukti pembayaran.</p>
                         </li>
                         <li class="mb-10 ml-6">
                             <span
                                 class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -left-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
                                 5
                             </span>
-                            <h3 class="font-medium leading-tight">Monitoring Pesanan</h3>
-                            <p class="text-sm text-justify max-w-lg">Setelah membayar DP pembeli dapat memantau pesanannya
-                                melalui website sudah sampai tahap mana.</p>
+                            <h3 class="font-medium leading-tight">Konfirmasi Pembayaran & Tiket</h3>
+                            <p class="text-sm text-justify max-w-lg">Admin akan memverifikasi bukti pembayaran. Jika disetujui, Anda akan menerima tiket pemesanan dalam bentuk PDF yang dapat diunduh.</p>
                         </li>
                         <li class="ml-6">
                             <span
                                 class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -left-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
                                 6
                             </span>
-                            <h3 class="font-medium leading-tight">Pelunasan</h3>
-                            <p class="text-sm text-justify max-w-lg">Pelunasan dapat dilakukan setelah barang diterima oleh
-                                pembeli.</p>
+                            <h3 class="font-medium leading-tight">Penyerahan</h3>
+                            <p class="text-sm text-justify max-w-lg">Serahkan bukti pdf ke pengawas stadion</p>
                         </li>
                     </ol>
                 </div>
                 <div class="lg:mt-0 lg:col-span-5 lg:flex">
-                    <img src="img/cara/cara.png" alt="mockup">
+                    <img src="storage\image\DENAH_STADION_SULTAN_AGUNG.png" alt="mockup" class="rounded-lg shadow-md mx-5000>
                 </div>
             </div>
         </div>
