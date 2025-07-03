@@ -41,7 +41,7 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'is_admin' => $request->has('is_admin'),
+            'role' => $request->has('is_admin') ? 'admin' : 'penyewa',
         ]);
 
         return redirect()->route('users.index')->with('success', 'Pengguna berhasil ditambahkan');
@@ -49,9 +49,11 @@ class UserController extends Controller
 
     public function toggleAdmin(User $user)
     {
-        $user->update(['is_admin' => !$user->is_admin]);
+        $user->update([
+            'role' => $user->role === 'admin' ? 'penyewa' : 'admin'
+        ]);
         
-        $message = $user->is_admin 
+        $message = $user->role === 'admin' 
             ? 'Pengguna berhasil dijadikan Admin' 
             : 'Pengguna berhasil diturunkan menjadi User';
             

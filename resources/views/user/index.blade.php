@@ -94,7 +94,7 @@
                                         {{ $user->email }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        @if($user->is_admin)
+                                        @if($user->role === 'admin')
                                             <span class="px-2 py-1 text-xs font-semibold text-white bg-purple-600 rounded-full">
                                                 <i class="fas fa-crown mr-1"></i> Admin
                                             </span>
@@ -107,11 +107,11 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex justify-end items-center space-x-2">
                                             <!-- Promote/Demote Button -->
-                                            <form action="{{ route('users.toggle-admin', $user) }}" method="POST">
+                                                <form action="{{ route('users.toggle-admin', $user) }}" method="POST">
                                                 @csrf
                                                 @method('PATCH')
-                                                <button type="submit" class="p-2 text-purple-600 hover:text-white bg-purple-50 hover:bg-purple-600 rounded-lg dark:text-purple-400 dark:hover:text-white dark:bg-gray-700 dark:hover:bg-purple-600" title="{{ $user->is_admin ? 'Turunkan menjadi User' : 'Jadikan Admin' }}">
-                                                    @if($user->is_admin)
+                                                <button type="submit" class="p-2 text-purple-600 hover:text-white bg-purple-50 hover:bg-purple-600 rounded-lg dark:text-purple-400 dark:hover:text-white dark:bg-gray-700 dark:hover:bg-purple-600" title="{{ $user->role === 'admin' ? 'Turunkan menjadi User' : 'Jadikan Admin' }}">
+                                                    @if($user->role === 'admin')
                                                         <i class="fas fa-user-shield"></i>
                                                     @else
                                                         <i class="fas fa-user-crown"></i>
