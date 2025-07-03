@@ -107,9 +107,28 @@ class PenyewaanStadionController extends Controller
         $kondisiMapping = [1 => 'pagi-siang', 2 => 'siang-sore', 3 => 'full-day'];
         $kondisi = $kondisiMapping[$validated['slot_waktu']];
         
-        $hargaSewa = HargaSewa::where('stadion_id', $validated['stadion_id'])
-            ->where('kondisi', $kondisi)
-            ->firstOrFail();
+        try {
+            $hargaSewa = HargaSewa::where('stadion_id', $validated['stadion_id'])
+                ->where('kondisi', $kondisi)
+                ->firstOrFail();
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors([
+                    'slot_waktu' => 'Harga sewa untuk slot waktu ini belum diatur. Silakan hubungi administrator.'
+                ]);
+        }
+
+        // Check if price is zero or negative
+        if ($hargaSewa->harga <= 0) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors([
+                    'slot_waktu' => 'Harga sewa tidak valid (Rp 0). Silakan hubungi administrator.'
+                ]);
+        }
 
         // Calculate time values
         $startDate = Carbon::parse($validated['tanggal_mulai']);
@@ -143,10 +162,24 @@ class PenyewaanStadionController extends Controller
             $validated['bukti_pembayaran'] = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
         }
 
+        // Check for schedule conflicts
+        if ($this->isJadwalBentrok(
+            $validated['stadion_id'],
+            $validated['tanggal_mulai']->format('Y-m-d'),
+            $validated['slot_waktu']
+        )) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors([
+                    'tanggal_mulai' => 'Tanggal yang dipilih sudah dipesan. Silakan pilih tanggal lain.'
+                ]);
+        }
+
         PenyewaanStadion::create($validated);
 
         return redirect()->route('penyewaan-stadion.my')
-            ->with('success', 'Booking berhasil dibuat.');
+            ->with('success', 'Pemesanan berhasil dibuat. Silakan upload bukti pembayaran.');
     }
 
     public function myBookings()
@@ -284,7 +317,9 @@ class PenyewaanStadionController extends Controller
             ->first();
 
         if (!$hargaSewa) {
-            return response()->json(['error' => 'Harga sewa tidak ditemukan.'], 404);
+            return response()->json([
+                'error' => 'Harga sewa untuk slot waktu ini belum diatur. Silakan hubungi admin.'
+            ], 404);
         }
 
         $totalHarga = $hargaSewa->harga * $validated['durasi'];

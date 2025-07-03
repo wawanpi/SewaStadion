@@ -66,6 +66,9 @@
                                     <option value="2" {{ old('slot_waktu') == 2 ? 'selected' : '' }}>Siang - Sore (12:00 - 18:00)</option>
                                     <option value="3" {{ old('slot_waktu') == 3 ? 'selected' : '' }}>Full Day (00:00 - 23:59)</option>
                                 </select>
+                                <div id="slot-error" class="mt-1 text-sm text-red-600 dark:text-red-400 hidden">
+                                    Harga sewa untuk slot ini belum diatur. Silakan hubungi admin.
+                                </div>
                             </div>
                            {{-- Tanggal Mulai --}}
                             <div>
@@ -125,12 +128,19 @@
                                     </span>
                                 </div>
                             </div>
+                            <div id="harga-error" class="mt-2 text-sm text-red-600 dark:text-red-400 hidden">
+                                Harga sewa belum diatur untuk kombinasi ini. Silakan hubungi administrator.
+                            </div>
                         </div>
+
+                        {{-- Hidden input for calculated price --}}
+                        <input type="hidden" name="harga" id="input_harga" value="0">
 
                         {{-- Submit --}}
                         <div class="flex justify-end pt-4">
-                            <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors duration-200">
+                            <button type="submit" id="submit-button" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                                 Ajukan Penyewaan
+                                <span id="submit-tooltip" class="ml-2 tooltip-text hidden text-xs">Silakan lengkapi form terlebih dahulu</span>
                             </button>
                         </div>
                     </form>
@@ -213,49 +223,88 @@
             return 0;
         }
 
-       function fetchHarga() {
+        function updateDurasiJam() {
+            const slotWaktu = $('#slot_waktu').val();
+            const durasiHari = parseInt($('#durasi_hari').val()) || 0;
+            
+            let jamPerHari = 0;
+            switch (slotWaktu) {
+                case '1': jamPerHari = 6; break; // Pagi-siang 6 jam
+                case '2': jamPerHari = 6; break; // Siang-sore 6 jam
+                case '3': jamPerHari = 24; break;
+            }
+            
+            const totalJam = jamPerHari * durasiHari;
+            $('#total_jam').text(totalJam + ' jam');
+        }
+
+        function fetchHarga() {
             const stadion_id = $('#stadion_id').val();
             const slot_waktu = $('#slot_waktu').val();
             const total_hari = hitungTanggalSelesai();
 
             $('#total_hari').text(total_hari + ' hari');
             $('#loadingHarga').removeClass('hidden');
+            $('#harga-error').addClass('hidden');
+            $('#slot-error').addClass('hidden');
 
-            if (stadion_id && slot_waktu && total_hari > 0) {
-                $.ajax({
-                    url: '{{ route("penyewaan-stadion.hitung-harga") }}',
-                    method: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        stadion_id: stadion_id,
-                        slot_waktu: slot_waktu,
-                        durasi: total_hari,
-                    },
-                    success: function (response) {
-                        const harga = response.total_harga || 0;
-                        $('.harga-text').text('Rp ' + new Intl.NumberFormat('id-ID').format(harga));
-                        $('#input_harga').val(harga); // Update hidden input
-                    },
-                    error: function () {
-                        $('.harga-text').text('Rp 0');
-                        $('#input_harga').val(0);
-                    },
-                    complete: function () {
-                        $('#loadingHarga').addClass('hidden');
-                    }
-                });
-            } else {
+            // Validasi form sebelum hitung harga
+            const isFormValid = stadion_id && slot_waktu && total_hari > 0;
+            $('#submit-button').prop('disabled', !isFormValid);
+            
+            if (!isFormValid) {
                 $('.harga-text').text('Rp 0');
                 $('#input_harga').val(0);
                 $('#loadingHarga').addClass('hidden');
+                return;
             }
+
+            $.ajax({
+                url: '{{ route("penyewaan-stadion.hitung-harga") }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    stadion_id: stadion_id,
+                    slot_waktu: slot_waktu,
+                    durasi: total_hari,
+                },
+                success: function (response) {
+                    if (response.error) {
+                        // Tampilkan pesan error jika harga tidak ditemukan
+                        $('.harga-text').text('Harga belum diatur');
+                        $('#input_harga').val(0);
+                        $('#harga-error').removeClass('hidden');
+                        $('#slot-error').removeClass('hidden');
+                        $('#submit-button').prop('disabled', true)
+                            .attr('title', 'Tidak bisa memesan karena harga belum diatur');
+                    } else {
+                        const harga = response.total_harga || 0;
+                        $('.harga-text').text('Rp ' + new Intl.NumberFormat('id-ID').format(harga));
+                        $('#input_harga').val(harga);
+                        $('#harga-error').addClass('hidden');
+                        $('#slot-error').addClass('hidden');
+                        $('#submit-button').prop('disabled', false)
+                            .removeAttr('title');
+                    }
+                },
+                error: function (xhr) {
+                    $('.harga-text').text('Gagal memuat harga');
+                    $('#input_harga').val(0);
+                    $('#harga-error').removeClass('hidden');
+                    $('#submit-button').prop('disabled', true)
+                        .attr('title', 'Tidak bisa memesan karena gagal memuat harga');
+                },
+                complete: function () {
+                    $('#loadingHarga').addClass('hidden');
+                }
+            });
         }
+
         $(document).ready(function () {
             fp = flatpickr("#tanggal_mulai", {
                 dateFormat: "Y-m-d",
                 minDate: "today",
                 onChange: function(selectedDates, dateStr) {
-                    console.log("Tanggal berubah:", dateStr); // Debugging
                     fetchHarga();
                     fetchKetersediaan();
                 },
@@ -291,35 +340,42 @@
                 }
             });
 
-            $('#tanggal_mulai, #durasi_hari, #stadion_id, #slot_waktu').on('change', fetchHarga);
+            // Event listeners
+            $('#tanggal_mulai, #durasi_hari, #stadion_id, #slot_waktu').on('change', function() {
+                fetchHarga();
+                updateDurasiJam();
+            });
+            
             $('#stadion_id, #slot_waktu').on('change', fetchKetersediaan);
             
             // Initialize
+            updateDurasiJam();
             fetchHarga();
             fetchKetersediaan();
         });
-        function updateDurasiJam() {
-            const slotWaktu = $('#slot_waktu').val();
-            const durasiHari = parseInt($('#durasi_hari').val()) || 0;
-            
-            let jamPerHari = 0;
-            switch (slotWaktu) {
-                case '1': jamPerHari = 6; break; // Pagi-siang 6 jam
-                case '2': jamPerHari = 6; break; // Siang-sore 6 jam (diperbaiki dari 5)
-                case '3': jamPerHari = 24; break;
-            }
-            
-            const totalJam = jamPerHari * durasiHari;
-            $('#total_jam').text(totalJam + ' jam');
-        }
-
-        // Panggil fungsi ini saat slot atau durasi berubah
-        $('#slot_waktu, #durasi_hari').on('change', function() {
-            updateDurasiJam();
-            fetchHarga();
-        });
-
-        // Panggil saat pertama kali load
-        updateDurasiJam();
     </script>
+
+    <style>
+        .flatpickr-disabled-custom {
+            color: #6b7280 !important;
+            cursor: not-allowed;
+        }
+        .fully-booked {
+            background-color: #fca5a5 !important;
+            color: #7f1d1d !important;
+        }
+        .partially-booked {
+            background-color: #fef08a !important;
+            color: #713f12 !important;
+        }
+        button[disabled] {
+            cursor: not-allowed;
+        }
+        .tooltip-text {
+            display: none;
+        }
+        button[disabled] .tooltip-text {
+            display: inline;
+        }
+    </style>
 @endsection
