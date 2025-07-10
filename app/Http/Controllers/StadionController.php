@@ -111,30 +111,6 @@ class StadionController extends Controller
         return redirect()->route('stadion.index')->with('success', 'Data stadion berhasil dihapus');
     }
 
-    // Kalau kamu tidak pakai kolom status, hapus method ini:
-    /*
-    public function updateStatus($id, $status)
-    {
-        $validStatus = [0, 1, 2, 3];
-
-        if (!in_array((int)$status, $validStatus, true)) {
-            return redirect()->back()->with('danger', 'Status tidak valid');
-        }
-
-        $stadion = Stadion::findOrFail($id);
-        $stadion->status = (int)$status;
-        $stadion->save();
-
-        $messages = [
-            0 => 'Status diubah menjadi Menunggu',
-            1 => 'Status diubah menjadi Disetujui',
-            2 => 'Status diubah menjadi Selesai',
-            3 => 'Status diubah menjadi Ditolak',
-        ];
-
-        return redirect()->route('stadion.index')->with('success', $messages[$status]);
-    }
-    */
     public function showDashboard(Request $request)
     {
         $query = Stadion::query();

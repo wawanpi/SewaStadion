@@ -3,7 +3,7 @@
         <div class="w-full max-w-md px-6">
             <!-- Logo atau Judul -->
             <div class="text-center mb-6">
-                <a href="#" class="text-2xl font-semibold text-gray-900 dark:text-white">Teras Kayu Purwokerto</a>
+                <a href="#" class="text-2xl font-semibold text-gray-900 dark:text-white">Selamat Datang</a>
             </div>
 
             <!-- Kotak Form -->

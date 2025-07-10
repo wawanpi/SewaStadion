@@ -22,6 +22,7 @@ class PenyewaanStadionController extends Controller
 
     public function adminIndex(Request $request)
     {
+        // Membuat query dasar dengan eager loading untuk relasi stadion dan user
         $query = PenyewaanStadion::with(['stadion:id,nama', 'user:id,name'])
             ->select([
                 'id', 'user_id', 'stadion_id', 'tanggal_mulai', 'slot_waktu',
@@ -30,12 +31,12 @@ class PenyewaanStadionController extends Controller
                 'created_at'
             ]);
         
-        // Filter berdasarkan status
+        // Filter berdasarkan status jika ada parameter status
         if ($request->has('status') && $request->status != 'Semua Status') {
             $query->where('status', $request->status);
         }
         
-        // Pencarian berdasarkan nama penyewa
+        // Pencarian berdasarkan nama penyewa jika ada parameter search
         if ($request->has('search')) {
             $search = $request->search;
             $query->whereHas('user', function($q) use ($search) {
@@ -43,9 +44,10 @@ class PenyewaanStadionController extends Controller
             });
         }
         
+        // Paginasi hasil query
         $penyewaanStadions = $query->latest()->paginate(10);
         
-        // Hitung jumlah per status untuk statistik
+        // Menghitung jumlah penyewaan berdasarkan status untuk statistik
         $counts = [
             'menunggu' => PenyewaanStadion::where('status', 'Menunggu')->count(),
             'diterima' => PenyewaanStadion::where('status', 'Diterima')->count(),
@@ -53,7 +55,40 @@ class PenyewaanStadionController extends Controller
             'selesai' => PenyewaanStadion::where('status', 'Selesai')->count(),
         ];
         
-        return view('penyewaan-stadion.admin.adminindex', compact('penyewaanStadions', 'counts'));
+        // Menghitung pendapatan bulan ini (hanya dari penyewaan yang selesai)
+        $pendapatanBulanIni = PenyewaanStadion::where('status', 'Selesai')
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->sum('harga');
+        
+        // Menghitung pendapatan bulan lalu untuk perbandingan
+        $pendapatanBulanLalu = PenyewaanStadion::where('status', 'Selesai')
+            ->whereMonth('created_at', now()->subMonth()->month)
+            ->whereYear('created_at', now()->subMonth()->year)
+            ->sum('harga');
+        
+        // Menghitung persentase perubahan pendapatan
+        $perubahanPendapatan = $pendapatanBulanLalu > 0 
+            ? (($pendapatanBulanIni - $pendapatanBulanLalu) / $pendapatanBulanLalu) * 100
+            : ($pendapatanBulanIni > 0 ? 100 : 0);
+        
+        // Menghitung pendapatan tahun ini
+        $pendapatanTahunIni = PenyewaanStadion::where('status', 'Selesai')
+            ->whereYear('created_at', now()->year)
+            ->sum('harga');
+        
+        // Menghitung total semua pendapatan
+        $totalPendapatan = PenyewaanStadion::where('status', 'Selesai')
+            ->sum('harga');
+        
+        return view('penyewaan-stadion.admin.adminindex', [
+            'penyewaanStadions' => $penyewaanStadions,
+            'counts' => $counts,
+            'monthlyRevenue' => $pendapatanBulanIni,  // Diubah
+            'revenueChange' => $perubahanPendapatan,   // Diubah
+            'pendapatanTahunIni' => $pendapatanTahunIni,
+            'totalPendapatan' => $totalPendapatan
+        ]);
     }
 
     public function create(Request $request)
