@@ -18,7 +18,8 @@ class PenyewaanStadion extends Model
         'bukti_pembayaran',
         'status',
         'catatan_tambahan',
-        'waktu_selesai'
+        'waktu_selesai',
+        'verifikasi',
     ];
 
     // Accessor untuk kondisi

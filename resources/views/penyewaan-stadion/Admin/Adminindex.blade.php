@@ -1,21 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="pt-20"> <!-- Tambah padding atas lebih besar -->
+<div class="pt-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Bagian Header dengan latar belakang -->
-        <div class="mb-6 p-4 rounded-lg bg-gray-800 dark:bg-gray-200 shadow-md">
+        <!-- Header Section -->
+        <div class="mb-6 p-4 rounded-lg bg-gradient-to-r from-gray-800 to-gray-700 dark:from-gray-200 dark:to-gray-300 shadow-md">
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                 <h2 class="text-2xl font-bold text-white dark:text-gray-900 mb-2 sm:mb-0">
-                    {{ __('Manajemen Penyewa ') }}
+                    {{ __('Manajemen Penyewa') }}
                 </h2>
-                <span class="text-sm font-medium text-gray-300 dark:text-gray-600">
+                <span class="text-sm font-medium text-gray-300 dark:text-gray-600 bg-gray-700 dark:bg-gray-200 px-3 py-1 rounded-full">
                     Total: {{ $penyewaanStadions->total() }} penyewa
                 </span>
             </div>
         </div>
 
-        <!-- Panel Notifikasi -->
+        <!-- Notification Panel -->
         <div class="mb-6 space-y-3">
             @foreach (['success' => 'green', 'danger' => 'red'] as $type => $color)
                 @if (session($type))
@@ -33,11 +33,12 @@
             @endforeach
         </div>
 
-        <!-- Kartu Filter -->
+        <!-- Filter Card -->
         <div class="mb-6 bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-gray-200 dark:border-gray-700">
             <form action="{{ route('admin.penyewaan.index') }}" method="GET">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div class="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4 w-full md:w-auto">
+                        <!-- Status Filter -->
                         <div class="relative w-full md:w-48">
                             <select name="status" class="block appearance-none bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-2 px-4 pr-8 rounded-lg leading-tight focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 w-full">
                                 <option value="Semua Status" {{ request('status') == 'Semua Status' ? 'selected' : '' }}>Semua Status</option>
@@ -52,23 +53,32 @@
                                 </svg>
                             </div>
                         </div>
+                        
+                        <!-- Search Input -->
                         <div class="relative w-full md:w-64">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
                             <input 
                                 type="text" 
                                 name="search" 
                                 placeholder="Cari penyewa..." 
                                 value="{{ request('search') }}"
-                                class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 w-full">
+                                class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-2 pl-10 pr-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 w-full">
                         </div>
                     </div>
+                    
+                    <!-- Action Buttons -->
                     <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 w-full md:w-auto">
-                        <button type="submit" class="bg-amber-600 hover:bg-amber-700 text-white py-2 px-4 rounded-lg flex items-center justify-center">
+                        <button type="submit" class="bg-amber-600 hover:bg-amber-700 text-white py-2 px-4 rounded-lg flex items-center justify-center transition-colors duration-200">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
                             </svg>
                             Filter
                         </button>
-                        <a href="{{ route('admin.penyewaan.index') }}" class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-300 py-2 px-4 rounded-lg flex items-center justify-center">
+                        <a href="{{ route('admin.penyewaan.index') }}" class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-300 py-2 px-4 rounded-lg flex items-center justify-center transition-colors duration-200">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                             </svg>
@@ -79,9 +89,10 @@
             </form>
         </div>
 
-        <!-- Kartu Statistik -->
+        <!-- Statistics Cards -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border-l-4 border-blue-500">
+            <!-- Total Penyewa -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border-l-4 border-blue-500 transition-transform hover:scale-[1.02]">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Penyewa</p>
@@ -95,7 +106,8 @@
                 </div>
             </div>
             
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border-l-4 border-yellow-500">
+            <!-- Menunggu -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border-l-4 border-yellow-500 transition-transform hover:scale-[1.02]">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Menunggu</p>
@@ -109,7 +121,8 @@
                 </div>
             </div>
             
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border-l-4 border-green-500">
+            <!-- Diterima -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border-l-4 border-green-500 transition-transform hover:scale-[1.02]">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Diterima</p>
@@ -123,7 +136,8 @@
                 </div>
             </div>
             
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border-l-4 border-red-500">
+            <!-- Selesai -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border-l-4 border-red-500 transition-transform hover:scale-[1.02]">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Selesai</p>
@@ -138,7 +152,7 @@
             </div>
         </div>
 
-        <!-- Kartu Tabel Utama -->
+        <!-- Main Table Card -->
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-200 dark:border-gray-700">
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -153,6 +167,8 @@
                                 'Durasi',
                                 'Harga',
                                 'Status',
+                                'Verifikasi KTP',
+                                'Bukti Bayar',
                                 'Aksi'
                             ] as $th)
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -261,25 +277,70 @@
                                     </span>
                                 </td>
                                 
+                                <!-- Verifikasi KTP -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @if($booking->verifikasi && Storage::disk('public')->exists($booking->verifikasi))
+                                        <a href="{{ asset('storage/' . $booking->verifikasi) }}" 
+                                        target="_blank" 
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
+                                        title="Klik untuk melihat">
+                                            <svg class="-ml-0.5 mr-1.5 h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                            </svg>
+                                            Lihat KTP
+                                        </a>
+                                    @else
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                            <svg class="-ml-0.5 mr-1.5 h-3 w-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Belum Upload
+                                        </span>
+                                    @endif
+                                </td>
+                                
+                                <!-- Bukti Pembayaran -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @if($booking->bukti_pembayaran && Storage::disk('public')->exists($booking->bukti_pembayaran))
+                                        <a href="{{ asset('storage/' . $booking->bukti_pembayaran) }}" 
+                                        target="_blank" 
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-800 transition-colors"
+                                        title="Klik untuk melihat bukti pembayaran">
+                                            <svg class="-ml-0.5 mr-1.5 h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+                                            </svg>
+                                            Lihat Bukti
+                                        </a>
+                                    @else
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                            <svg class="-ml-0.5 mr-1.5 h-3 w-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Belum Upload
+                                        </span>
+                                    @endif
+                                </td>
+                                
                                 <!-- Aksi -->
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <div class="flex items-center space-x-2">
-                                        <!-- Tombol Lihat -->
+                                    <div class="flex items-center space-x-2 justify-end">
                                         @if($booking->status === 'Menunggu')
                                             <!-- Tombol Setujui -->
                                             <form action="{{ route('admin.penyewaan.approve', $booking) }}" method="POST">
                                                 @csrf @method('PATCH')
-                                                <button type="submit" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300" title="Setujui">
+                                                <button type="submit" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 transition-colors" title="Setujui">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                                     </svg>
                                                 </button>
                                             </form>
-                                            
+                                        @endif
+                                        
+                                        @if(in_array($booking->status, ['Menunggu', 'Diterima']))
                                             <!-- Tombol Tolak -->
                                             <form action="{{ route('admin.penyewaan.reject', $booking) }}" method="POST">
                                                 @csrf @method('PATCH')
-                                                <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" title="Tolak">
+                                                <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 transition-colors" title="Tolak" onclick="return confirm('Yakin ingin menolak penyewaan ini?')">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                                     </svg>
@@ -291,28 +352,19 @@
                                             <!-- Tombol Selesai -->
                                             <form action="{{ route('penyewaan_stadion.finish', $booking) }}" method="POST" onsubmit="return confirm('Tandai sebagai selesai?')">
                                                 @csrf @method('PATCH')
-                                                <button type="submit" class="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300" title="Selesai">
+                                                <button type="submit" class="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300 transition-colors" title="Selesai">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                     </svg>
                                                 </button>
                                             </form>
                                         @endif
-                                        
-                                        <!-- Bukti Pembayaran -->
-                                        @if($booking->bukti_pembayaran)
-                                            <a href="{{ asset('storage/' . $booking->bukti_pembayaran) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300" title="Bukti Pembayaran">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                                </svg>
-                                            </a>
-                                        @endif
                                     </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                                <td colspan="11" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
                                     <div class="flex flex-col items-center justify-center py-8">
                                         <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>

@@ -7,7 +7,7 @@
             <div class="mb-6 p-4 rounded-lg bg-gray-800 dark:bg-gray-200 shadow-md">
                 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                     <h2 class="text-2xl font-bold text-white dark:text-gray-900 mb-2 sm:mb-0">
-                        {{ __('Manajemen Stadion & Fasilitas ') }}
+                        {{ __('Manajemen Stadion & Fasilitas Stadion ') }}
                     </h2>
                 </div>
             </div>

@@ -27,7 +27,7 @@ class PenyewaanStadionController extends Controller
             ->select([
                 'id', 'user_id', 'stadion_id', 'tanggal_mulai', 'slot_waktu',
                 'waktu_selesai', 'durasi_hari', 'durasi_jam', 'kondisi',
-                'harga', 'bukti_pembayaran', 'status', 'catatan_tambahan',
+                'harga', 'bukti_pembayaran', 'status', 'catatan_tambahan','verifikasi',
                 'created_at'
             ]);
         
@@ -135,6 +135,7 @@ class PenyewaanStadionController extends Controller
             ],
             'slot_waktu' => 'required|in:1,2,3',
             'bukti_pembayaran' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'verifikasi' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
             'catatan_tambahan' => 'nullable|string|max:255',
         ]);
 
@@ -196,6 +197,10 @@ class PenyewaanStadionController extends Controller
         if ($request->hasFile('bukti_pembayaran')) {
             $validated['bukti_pembayaran'] = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
         }
+        // TAMBAHKAN DI SINI - Handle file upload untuk verifikasi KTP
+        if ($request->hasFile('verifikasi')) {
+            $validated['verifikasi'] = $request->file('verifikasi')->store('verifikasi_ktp', 'public');
+        }
 
         // Check for schedule conflicts
         if ($this->isJadwalBentrok(
@@ -214,7 +219,7 @@ class PenyewaanStadionController extends Controller
         PenyewaanStadion::create($validated);
 
         return redirect()->route('penyewaan-stadion.my')
-            ->with('success', 'Pemesanan berhasil dibuat. Silakan upload bukti pembayaran.');
+            ->with('success', 'Pemesanan berhasil dibuat. Silakan Menunggu Pesanan Ditrima.');
     }
 
     public function myBookings()
@@ -249,6 +254,7 @@ class PenyewaanStadionController extends Controller
             if ($booking->bukti_pembayaran && Storage::disk('public')->exists($booking->bukti_pembayaran)) {
                 Storage::disk('public')->delete($booking->bukti_pembayaran);
             }
+        
 
             $path = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
             $booking->update(['bukti_pembayaran' => $path]);

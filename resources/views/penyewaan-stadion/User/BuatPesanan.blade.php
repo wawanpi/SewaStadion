@@ -116,7 +116,26 @@
                             <label for="catatan_tambahan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Catatan Tambahan</label>
                             <textarea name="catatan_tambahan" id="catatan_tambahan" rows="3" class="shadow-sm focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white">{{ old('catatan_tambahan') }}</textarea>
                         </div>
-
+                        {{-- Upload KTP/Identitas --}}
+                        <div>
+                            <label for="verifikasi" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Upload KTP/Identitas Diri (Format: JPG/PNG/PDF, Maks: 5MB)
+                            </label>
+                            <div class="mt-1 flex items-center">
+                                <input type="file" name="verifikasi" id="verifikasi" 
+                                    class="block w-full text-sm text-gray-500 dark:text-gray-400
+                                            file:mr-4 file:py-2 file:px-4
+                                            file:rounded-md file:border-0
+                                            file:text-sm file:font-semibold
+                                            file:bg-amber-50 file:text-amber-700 dark:file:bg-gray-600 dark:file:text-amber-300
+                                            hover:file:bg-amber-100 dark:hover:file:bg-gray-500
+                                            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+                                    accept=".jpg,.jpeg,.png,.pdf" required>
+                            </div>
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                * File harus jelas menunjukkan identitas Anda. Format yang diterima: JPG, PNG, PDF (maks 5MB)
+                            </p>
+                        </div>
                         {{-- Total Harga --}}
                         <div class="bg-amber-50 dark:bg-gray-700 p-4 rounded-md border border-amber-100 dark:border-gray-600">
                             <div class="flex justify-between items-center">
