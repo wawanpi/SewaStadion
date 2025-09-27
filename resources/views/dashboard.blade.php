@@ -211,7 +211,7 @@
                 <!-- Sosial Media -->
                 <div class="flex space-x-6 mt-4">
                     <!-- Instagram -->
-                    <a href="https://instagram.com/username" target="_blank" aria-label="Instagram"
+                    <a href="https://www.instagram.com/pemkabbantul/" target="_blank" aria-label="Instagram"
                         class="text-gray-400 hover:text-white transition duration-300">
                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                             <path
@@ -219,17 +219,18 @@
                         </svg>
                     </a>
 
-                    <!-- WhatsApp -->
-                    <a href="https://wa.me/6281234567890" target="_blank" aria-label="WhatsApp"
+                    <!-- Email -->
+                    <a href="mailto:publikasi@bantulkab.go.id" aria-label="Email"
                         class="text-gray-400 hover:text-white transition duration-300">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M12.04 2.004a9.998 9.998 0 00-8.732 14.8L2.3 21.7l4.986-1.38a10 10 0 104.754-18.316zm5.356 14.519c-.216.608-1.265 1.197-1.792 1.256-.478.052-1.064.074-1.712-.11-1.968-.574-3.25-2.134-3.51-2.49s-.836-1.113-.836-2.13.528-1.508.714-1.715c.185-.207.41-.26.548-.26.138 0 .273.001.393.007.121.006.31-.05.483.358s.563 1.387.613 1.488c.05.1.082.22.016.358-.066.138-.097.22-.193.334-.097.115-.203.258-.289.346-.087.088-.177.185-.077.363.1.178.447.738.957 1.197.66.589 1.22.774 1.399.863.18.09.282.075.39-.045.108-.12.445-.518.564-.693.12-.175.23-.145.383-.087.153.058.968.456 1.133.537.166.082.276.121.317.187.041.066.041.706-.174 1.314z" />
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                            </path>
                         </svg>
                     </a>
 
                     <!-- Facebook -->
-                    <a href="https://facebook.com/username" target="_blank" aria-label="Facebook"
+                    <a href="https://web.facebook.com/pemkabbantul/?locale=id_ID&_rdc=1&_rdr#" target="_blank" aria-label="Facebook"
                         class="text-gray-400 hover:text-white transition duration-300">
                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                             <path
@@ -241,11 +242,9 @@
 
             <!-- Perusahaan -->
             <div>
-                <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">Perusahaan</h3>
+                <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">Dikpora Bantul</h3>
                 <ul class="space-y-2">
-                    <li><a href="#" class="hover:text-white">Tentang Kami</a></li>
-                    <li><a href="#" class="hover:text-white">Karir</a></li>
-                    <li><a href="#" class="hover:text-white">Blog</a></li>
+                    <li><a href="https://bantulkab.go.id/" class="hover:text-white">Blog</a></li>
                 </ul>
             </div>
 
@@ -253,9 +252,7 @@
             <div>
                 <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">Bantuan</h3>
                 <ul class="space-y-2">
-                    <li><a href="#" class="hover:text-white">Pusat Bantuan</a></li>
-                    <li><a href="#" class="hover:text-white">Kebijakan Privasi</a></li>
-                    <li><a href="#" class="hover:text-white">FAQ</a></li>
+                    <li><a href="#" class="hover:text-white">customer service</a></li>
                 </ul>
             </div>
         </div>
