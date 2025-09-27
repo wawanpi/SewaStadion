@@ -9,8 +9,7 @@ use Illuminate\Http\Request;
 class HargaSewaController extends Controller
 {
     // Daftar kondisi yang valid untuk harga sewa
-    private $kondisiList = ['pagi-siang', 'siang-sore', 'full-day'];
-
+    private $kondisiList = ['pagi-siang', 'siang-sore', 'full-day', 'malam'];
     // Menampilkan daftar harga sewa dengan relasi stadion, paginasi 10 per halaman
     public function index(Request $request)
     {

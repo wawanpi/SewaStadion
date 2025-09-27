@@ -31,6 +31,8 @@
                     <option value="pagi-siang" {{ old('kondisi') == 'pagi-siang' ? 'selected' : '' }}>Pagi - Siang</option>
                     <option value="siang-sore" {{ old('kondisi') == 'siang-sore' ? 'selected' : '' }}>Siang - Sore</option>
                     <option value="full-day" {{ old('kondisi') == 'full-day' ? 'selected' : '' }}>1 Hari Penuh</option>
+                    <option value="malam" {{ old('kondisi') == 'malam' ? 'selected' : '' }}>Malam</option>
+
                 </select>
                 @error('kondisi') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>

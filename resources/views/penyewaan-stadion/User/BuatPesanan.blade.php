@@ -62,9 +62,12 @@
                                 <label for="slot_waktu" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Slot Waktu</label>
                                 <select name="slot_waktu" id="slot_waktu" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm rounded-md shadow-sm dark:bg-gray-700 dark:text-white" required>
                                     <option value="">-- Pilih Slot --</option>
-                                    <option value="1" {{ old('slot_waktu') == 1 ? 'selected' : '' }}>Pagi - Siang (06:00 - 12:00)</option>
-                                    <option value="2" {{ old('slot_waktu') == 2 ? 'selected' : '' }}>Siang - Sore (12:00 - 18:00)</option>
-                                    <option value="3" {{ old('slot_waktu') == 3 ? 'selected' : '' }}>Full Day (00:00 - 23:59)</option>
+                                    {{-- BLOK PERBAIKAN: Menggunakan data dinamis dari Controller --}}
+                                    @foreach ($slots as $id => $nama)
+                                        <option value="{{ $id }}" {{ old('slot_waktu') == $id ? 'selected' : '' }}>
+                                            {{ $nama }}
+                                        </option>
+                                    @endforeach
                                 </select>
                                 <div id="slot-error" class="mt-1 text-sm text-red-600 dark:text-red-400 hidden">
                                     Harga sewa untuk slot ini belum diatur. Silakan hubungi admin.
@@ -181,41 +184,20 @@
             const stadionId = $('#stadion_id').val();
             const slotWaktu = $('#slot_waktu').val();
             
-            if (!stadionId || !slotWaktu) return;
+            if (!stadionId) { // Tidak perlu slotWaktu, ambil semua data untuk stadion terpilih
+                if(fp) fp.clear();
+                return;
+            };
 
             $.ajax({
                 url: '{{ route("penyewaan-stadion.ketersediaan") }}',
                 method: 'GET',
                 data: { 
-                    stadion_id: stadionId,
-                    slot_waktu: slotWaktu
+                    stadion_id: stadionId
                 },
                 success: function (response) {
                     availabilityResponse = response;
-                    const fullyDisabledDates = response.fully_booked_dates;
-                    const slotDisabledDates = [];
-                    
-                    // Cek konflik berdasarkan slot yang dipilih
-                    response.partially_booked_dates.forEach(item => {
-                        // Jika memilih pagi (1) dan pagi sudah dipesan
-                        if (slotWaktu == 1 && item['pagi-siang']) {
-                            slotDisabledDates.push(item.date);
-                        } 
-                        // Jika memilih sore (2) dan sore sudah dipesan
-                        else if (slotWaktu == 2 && item['siang-sore']) {
-                            slotDisabledDates.push(item.date);
-                        }
-                        // Jika memilih full day (3) dan ada booking apapun
-                        else if (slotWaktu == 3 && (item['pagi-siang'] || item['siang-sore'])) {
-                            slotDisabledDates.push(item.date);
-                        }
-                    });
-
-                    // Gabungkan semua tanggal yang tidak bisa dipilih
-                    const allDisabledDates = [...new Set([...fullyDisabledDates, ...slotDisabledDates])];
-                    
-                    fp.set('disable', allDisabledDates);
-                    fp.redraw();
+                    fp.redraw(); // Minta Flatpickr untuk menggambar ulang kalender
                 },
                 error: function(xhr) {
                     console.error('Error fetching availability:', xhr.responseText);
@@ -224,10 +206,13 @@
         }
 
         function hitungTanggalSelesai() {
-            const mulai = new Date($('#tanggal_mulai').val());
+            const mulaiText = $('#tanggal_mulai').val();
+            if(!mulaiText) return 0;
+
+            const mulai = new Date(mulaiText);
             const durasi = parseInt($('#durasi_hari').val());
 
-            if (!isNaN(mulai) && durasi > 0) {
+            if (!isNaN(mulai.getTime()) && durasi > 0) {
                 const selesai = new Date(mulai);
                 selesai.setDate(selesai.getDate() + durasi - 1);
 
@@ -248,9 +233,10 @@
             
             let jamPerHari = 0;
             switch (slotWaktu) {
-                case '1': jamPerHari = 6; break; // Pagi-siang 6 jam
-                case '2': jamPerHari = 6; break; // Siang-sore 6 jam
+                case '1': jamPerHari = 6; break;
+                case '2': jamPerHari = 6; break;
                 case '3': jamPerHari = 24; break;
+                case '4': jamPerHari = 4; break;
             }
             
             const totalJam = jamPerHari * durasiHari;
@@ -267,7 +253,6 @@
             $('#harga-error').addClass('hidden');
             $('#slot-error').addClass('hidden');
 
-            // Validasi form sebelum hitung harga
             const isFormValid = stadion_id && slot_waktu && total_hari > 0;
             $('#submit-button').prop('disabled', !isFormValid);
             
@@ -289,7 +274,6 @@
                 },
                 success: function (response) {
                     if (response.error) {
-                        // Tampilkan pesan error jika harga tidak ditemukan
                         $('.harga-text').text('Harga belum diatur');
                         $('#input_harga').val(0);
                         $('#harga-error').removeClass('hidden');
@@ -325,36 +309,50 @@
                 minDate: "today",
                 onChange: function(selectedDates, dateStr) {
                     fetchHarga();
-                    fetchKetersediaan();
                 },
+                // PERBAIKAN: Logika untuk menonaktifkan tanggal
                 onDayCreate: function(dObj, dStr, fp, dayElem) {
                     const dateStr = dayElem.dateObj.toISOString().split('T')[0];
-                    
                     if (!availabilityResponse) return;
                     
-                    // Reset classes first
-                    dayElem.classList.remove("fully-booked", "partially-booked", "flatpickr-disabled-custom");
-                    
-                    // Check if date is disabled
-                    if (fp.config.disable.includes(dateStr)) {
-                        dayElem.classList.add("flatpickr-disabled-custom");
-                        
-                        // Check if fully booked
-                        if (availabilityResponse.fully_booked_dates.includes(dateStr)) {
+                    const slotTerpilih = $('#slot_waktu').val();
+                    const infoTanggal = availabilityResponse.data[dateStr];
+
+                    // Reset tampilan hari
+                    dayElem.classList.remove("fully-booked", "partially-booked");
+                    let tooltip = '';
+                    let isDisabled = false;
+
+                    if (infoTanggal) {
+                        // Cek apakah tanggal ini terisi penuh
+                        if (infoTanggal['full-day'] || (infoTanggal['pagi-siang'] && infoTanggal['siang-sore'] && infoTanggal['malam'])) {
                             dayElem.classList.add("fully-booked");
-                            dayElem.title = "Tanggal ini sudah penuh (full day atau kedua slot terisi)";
+                            tooltip = 'Tanggal ini sudah penuh dipesan.';
+                            isDisabled = true;
                         } 
-                        // Check if partially booked
-                        else {
-                            const partialBooking = availabilityResponse.partially_booked_dates.find(item => item.date === dateStr);
-                            if (partialBooking) {
-                                dayElem.classList.add("partially-booked");
-                                let availableSlots = [];
-                                if (!partialBooking['pagi-siang']) availableSlots.push("Pagi");
-                                if (!partialBooking['siang-sore']) availableSlots.push("Sore");
-                                dayElem.title = "Slot tersedia: " + availableSlots.join(", ");
+                        // Cek konflik dengan slot yang sedang dipilih
+                        else if (slotTerpilih) {
+                            const kondisiMapping = { '1': 'pagi-siang', '2': 'siang-sore', '3': 'full-day', '4': 'malam' };
+                            const kondisiTerpilih = kondisiMapping[slotTerpilih];
+                            
+                            // Jika slot yang dipilih sudah terisi, nonaktifkan
+                            if (infoTanggal[kondisiTerpilih]) {
+                                isDisabled = true;
+                                tooltip = 'Slot yang Anda pilih di tanggal ini sudah dipesan.';
+                            } 
+                            // Jika mau pesan Full Day tapi sudah ada yg pesan slot lain
+                            else if (slotTerpilih == '3' && (infoTanggal['pagi-siang'] || infoTanggal['siang-sore'] || infoTanggal['malam'])) {
+                                isDisabled = true;
+                                tooltip = 'Tidak bisa pesan Full Day karena sebagian slot sudah terisi.';
                             }
                         }
+                    }
+
+                    if(isDisabled) {
+                        dayElem.classList.add("flatpickr-disabled");
+                    }
+                    if(tooltip) {
+                        dayElem.title = tooltip;
                     }
                 }
             });
@@ -365,7 +363,10 @@
                 updateDurasiJam();
             });
             
-            $('#stadion_id, #slot_waktu').on('change', fetchKetersediaan);
+            $('#stadion_id, #slot_waktu').on('change', function() {
+                // Saat ganti stadion atau slot, panggil ketersediaan dan gambar ulang kalender
+                fetchKetersediaan();
+            });
             
             // Initialize
             updateDurasiJam();
@@ -375,13 +376,15 @@
     </script>
 
     <style>
-        .flatpickr-disabled-custom {
-            color: #6b7280 !important;
-            cursor: not-allowed;
-        }
-        .fully-booked {
+        .flatpickr-disabled {
             background-color: #fca5a5 !important;
             color: #7f1d1d !important;
+            cursor: not-allowed;
+            border-color: #f87171 !important;
+        }
+        .fully-booked {
+            background-color: #ef4444 !important;
+            color: #ffffff !important;
         }
         .partially-booked {
             background-color: #fef08a !important;
@@ -397,4 +400,5 @@
             display: inline;
         }
     </style>
+</div>
 @endsection
