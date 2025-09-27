@@ -10,6 +10,7 @@ class PenyewaanStadion extends Model
         'user_id',
         'stadion_id',
         'tanggal_mulai',
+        'tanggal_selesai', // <-- TAMBAHKAN INI
         'durasi_hari', // tambahkan ini
         'durasi_jam',  // tambahkan ini
         'slot_waktu',
