@@ -131,7 +131,7 @@ class PenyewaanStadionController extends Controller
             ],
             'slot_waktu' => 'required|in:' . implode(',', array_keys(self::SLOT_WAKTU)),
             'bukti_pembayaran' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'verifikasi' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'verifikasi' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,txt|max:5120',
             'catatan_tambahan' => 'nullable|string|max:255',
         ]);
 
@@ -174,7 +174,7 @@ class PenyewaanStadionController extends Controller
             $validated['bukti_pembayaran'] = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
         }
         if ($request->hasFile('verifikasi')) {
-            $validated['verifikasi'] = $request->file('verifikasi')->store('verifikasi_ktp', 'public');
+            $validated['verifikasi'] = $request->file('verifikasi')->store('bukti_surat_permohonan', 'public');
         }
 
         if ($this->isJadwalBentrok(

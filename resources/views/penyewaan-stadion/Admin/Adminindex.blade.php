@@ -167,7 +167,7 @@
                                 'Durasi',
                                 'Harga',
                                 'Status',
-                                'Verifikasi KTP',
+                                'Surat Permohonan sewa',
                                 'Bukti Bayar',
                                 'Aksi'
                             ] as $th)
@@ -277,7 +277,7 @@
                                     </span>
                                 </td>
                                 
-                                <!-- Verifikasi KTP -->
+                                <!-- Surat Permohonan sewa -->
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @if($booking->verifikasi && Storage::disk('public')->exists($booking->verifikasi))
                                         <a href="{{ asset('storage/' . $booking->verifikasi) }}" 
@@ -287,7 +287,7 @@
                                             <svg class="-ml-0.5 mr-1.5 h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                                             </svg>
-                                            Lihat KTP
+                                            Lihat Surat Permohonan sewa
                                         </a>
                                     @else
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
