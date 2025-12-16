@@ -4,13 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Stadion;
-use App\Models\User; // Import Model User untuk hitung statistik
+use App\Models\User;
+use App\Models\PenyewaanStadion; // Pastikan model ini ada
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth; // Import Facade Auth untuk cek user login
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod; // Import ini penting untuk loop tanggal grafik
 
 class StadionController extends Controller
 {
-    // Tampilkan semua data stadion (Halaman Admin - List Stadion)
+    // ==========================================
+    // BAGIAN CRUD STADION (TIDAK BERUBAH)
+    // ==========================================
+
+    // Tampilkan semua data stadion
     public function index(Request $request)
     {
         $query = Stadion::query();
@@ -20,7 +27,7 @@ class StadionController extends Controller
                 ->orWhere('lokasi', 'like', "%{$search}%");
         }
 
-        $stadions = $query->latest()->paginate(10); // Sesuaikan jumlah item per halaman
+        $stadions = $query->latest()->paginate(10);
         return view('stadion.index', compact('stadions'));
     }
 
@@ -37,17 +44,15 @@ class StadionController extends Controller
             'nama' => 'required|string|max:255',
             'lokasi' => 'required|string|max:255',
             'deskripsi' => 'required|string',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120', // 5120 KB = 5MB
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
 
         $data = [
             'nama' => $request->nama,
             'lokasi' => $request->lokasi,
             'deskripsi' => $request->deskripsi,
-            // tidak ada kapasitas dan status
         ];
 
-        // Handle upload foto jika ada
         if ($request->hasFile('foto')) {
             $path = $request->file('foto')->store('stadion_foto', 'public');
             $data['foto'] = $path;
@@ -72,7 +77,7 @@ class StadionController extends Controller
             'nama' => 'required|string|max:255',
             'lokasi' => 'required|string|max:255',
             'deskripsi' => 'required|string',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120', // 5120 KB = 5MB
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
 
         $stadion = Stadion::findOrFail($id);
@@ -81,10 +86,8 @@ class StadionController extends Controller
             'nama' => $request->nama,
             'lokasi' => $request->lokasi,
             'deskripsi' => $request->deskripsi,
-            // hapus kapasitas
         ];
 
-        // Handle upload foto baru dan hapus foto lama jika ada
         if ($request->hasFile('foto')) {
             if ($stadion->foto && Storage::disk('public')->exists($stadion->foto)) {
                 Storage::disk('public')->delete($stadion->foto);
@@ -113,26 +116,123 @@ class StadionController extends Controller
         return redirect()->route('stadion.index')->with('success', 'Data stadion berhasil dihapus');
     }
 
-    // LOGIKA DASHBOARD YANG DIPERBARUI
+    // ==========================================
+    // LOGIKA DASHBOARD ADMIN (SMART CHART FIX)
+    // ==========================================
+    
     public function showDashboard(Request $request)
     {
         $user = Auth::user();
 
-        // 1. JIKA ADMIN: Tampilkan Dashboard Admin dengan Statistik
+        // 1. JIKA ADMIN
         if ($user->is_admin) {
-            // Data statistik (Gabungan Real Count & Dummy)
+            
+            // Konfigurasi Status (Sesuai Database Anda)
+            $statusPaid = 'Selesai'; 
+
+            // --- A. SETUP FILTER TANGGAL ---
+            $startDate = $request->input('start_date') 
+                ? Carbon::parse($request->input('start_date'))->startOfDay() 
+                : Carbon::now()->subDays(6)->startOfDay();
+
+            $endDate = $request->input('end_date') 
+                ? Carbon::parse($request->input('end_date'))->endOfDay() 
+                : Carbon::now()->endOfDay();
+
+            // --- B. HITUNG STATISTIK FIX (TIDAK TERPENGARUH FILTER) ---
+            
+            // 1. Pendapatan Hari Ini
+            $todayRevenue = PenyewaanStadion::where('status', $statusPaid)
+                ->whereDate('created_at', Carbon::today())
+                ->sum('harga'); 
+
+            // 2. Pendapatan Bulan Ini
+            $monthlyRevenue = PenyewaanStadion::where('status', $statusPaid)
+                ->whereMonth('created_at', Carbon::now()->month)
+                ->whereYear('created_at', Carbon::now()->year)
+                ->sum('harga'); 
+
+            // --- C. HITUNG STATISTIK DINAMIS (TERPENGARUH FILTER) ---
+
+            // 3. Pendapatan Berdasarkan Filter Range (Periode Ini)
+            $filteredRevenue = PenyewaanStadion::where('status', $statusPaid)
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->sum('harga'); 
+
+            // 4. Total Booking Berdasarkan Filter Range
+            $filteredBooking = PenyewaanStadion::whereBetween('created_at', [$startDate, $endDate])
+                ->count(); 
+
+            // --- D. DATA CHART DINAMIS (SMART LOGIC) ---
+            $chartData = [];
+            $chartLabels = [];
+            
+            // Hitung selisih hari untuk menentukan mode grafik
+            $diffInDays = $startDate->diffInDays($endDate);
+
+            if ($diffInDays > 31) {
+                // KASUS 1: JIKA RENTANG > 31 HARI -> TAMPILKAN PER BULAN
+                // Loop per bulan
+                $period = CarbonPeriod::create($startDate, '1 month', $endDate);
+
+                foreach ($period as $date) {
+                    $monthStart = $date->copy()->startOfMonth();
+                    $monthEnd = $date->copy()->endOfMonth();
+
+                    // Pastikan tidak melebihi range yang dipilih user (clamping)
+                    if ($monthStart < $startDate) $monthStart = $startDate;
+                    if ($monthEnd > $endDate) $monthEnd = $endDate;
+
+                    $revenue = PenyewaanStadion::where('status', $statusPaid)
+                        ->whereBetween('created_at', [$monthStart, $monthEnd])
+                        ->sum('harga');
+                    
+                    $chartLabels[] = $date->format('M Y'); // Label: Jan 2025
+                    $chartData[] = $revenue;
+                }
+
+            } else {
+                // KASUS 2: JIKA RENTANG <= 31 HARI -> TAMPILKAN PER HARI
+                $period = CarbonPeriod::create($startDate, $endDate);
+
+                foreach ($period as $date) {
+                    // Hitung pendapatan per tanggal
+                    $revenue = PenyewaanStadion::where('status', $statusPaid)
+                        ->whereDate('created_at', $date)
+                        ->sum('harga'); 
+                    
+                    $chartLabels[] = $date->format('d M'); // Label: 12 Jan
+                    $chartData[] = $revenue;
+                }
+            }
+
+            // --- E. PACKING DATA UNTUK VIEW ---
             $stats = [
-                'total_user' => User::count(),      // Hitung user asli dari DB
-                'total_stadion' => Stadion::count(), // Hitung stadion asli dari DB
-                'total_booking' => 125,             // Dummy Data (bisa diganti Booking::count() nanti)
-                'pendapatan' => 15000000,           // Dummy Data
+                'total_user' => User::count(),
+                'total_stadion' => Stadion::count(),
+                
+                // Data Dinamis
+                'total_booking' => $filteredBooking,
+                'pendapatan_total' => $filteredRevenue,
+                
+                // Data Statis
+                'pendapatan_hari_ini' => $todayRevenue,
+                'pendapatan_bulan_ini' => $monthlyRevenue,
+                
+                // Chart
+                'chart_labels' => json_encode($chartLabels),
+                'chart_data' => json_encode($chartData),
+                
+                // Info Filter
+                'filter_start' => $startDate->format('Y-m-d'),
+                'filter_end' => $endDate->format('Y-m-d'),
+                'label_periode' => $startDate->format('d M Y') . ' - ' . $endDate->format('d M Y'),
             ];
 
-            // Return ke view khusus admin: resources/views/admin/dashboard.blade.php
             return view('admin.dashboard', compact('stats'));
         }
 
-        // 2. JIKA USER BIASA: Tampilkan Pencarian & Daftar Stadion
+        // 2. JIKA USER BIASA
         $query = Stadion::query();
 
         if ($search = $request->input('search')) {
@@ -141,8 +241,6 @@ class StadionController extends Controller
 
         $stadions = $query->latest()->paginate(6); 
 
-        // Return ke view khusus user: resources/views/user/dashboard.blade.php
-        // Pastikan Anda sudah memindahkan file dashboard lama ke folder user/
         return view('user.dashboard', compact('stadions'));
     }
 }
