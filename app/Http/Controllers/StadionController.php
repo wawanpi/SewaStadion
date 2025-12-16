@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Stadion;
+use App\Models\User; // Import Model User untuk hitung statistik
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth; // Import Facade Auth untuk cek user login
 
 class StadionController extends Controller
 {
-    // Tampilkan semua data stadion
+    // Tampilkan semua data stadion (Halaman Admin - List Stadion)
     public function index(Request $request)
     {
         $query = Stadion::query();
@@ -111,18 +113,36 @@ class StadionController extends Controller
         return redirect()->route('stadion.index')->with('success', 'Data stadion berhasil dihapus');
     }
 
+    // LOGIKA DASHBOARD YANG DIPERBARUI
     public function showDashboard(Request $request)
     {
+        $user = Auth::user();
+
+        // 1. JIKA ADMIN: Tampilkan Dashboard Admin dengan Statistik
+        if ($user->is_admin) {
+            // Data statistik (Gabungan Real Count & Dummy)
+            $stats = [
+                'total_user' => User::count(),      // Hitung user asli dari DB
+                'total_stadion' => Stadion::count(), // Hitung stadion asli dari DB
+                'total_booking' => 125,             // Dummy Data (bisa diganti Booking::count() nanti)
+                'pendapatan' => 15000000,           // Dummy Data
+            ];
+
+            // Return ke view khusus admin: resources/views/admin/dashboard.blade.php
+            return view('admin.dashboard', compact('stats'));
+        }
+
+        // 2. JIKA USER BIASA: Tampilkan Pencarian & Daftar Stadion
         $query = Stadion::query();
 
         if ($search = $request->input('search')) {
             $query->where('nama', 'like', "%{$search}%");
         }
 
-        $stadions = $query->latest()->paginate(6); // gunakan paginate agar bisa gunakan links()
+        $stadions = $query->latest()->paginate(6); 
 
-        return view('dashboard', compact('stadions'));
+        // Return ke view khusus user: resources/views/user/dashboard.blade.php
+        // Pastikan Anda sudah memindahkan file dashboard lama ke folder user/
+        return view('user.dashboard', compact('stadions'));
     }
-
-
 }

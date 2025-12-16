@@ -1,34 +1,39 @@
-<nav x-data="{ open: false }" class="bg-light px-4 py-2.5 dark:bg-dark fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
+<nav x-data="{ open: false }" class="bg-white px-4 py-2.5 dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
     <div class="container flex flex-wrap items-center justify-between mx-auto">
-        <!-- Logo + Text -->
         <div class="flex items-center space-x-8">
             <a href="{{ route('dashboard') }}" class="flex items-center space-x-2">
+                {{-- Pastikan path logo sudah benar --}}
                 <img src="{{ asset('storage/image/logo.jpg') }}" class="h-12 w-12 rounded-full" alt="Logo Dikpora">
                 <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
-                  Admin  Dikpora Bantul
+                   Admin Dikpora Bantul
                 </span>
             </a>
 
-            <!-- Navigation Links -->
             <div class="hidden md:flex space-x-4">
-                <x-nav-link :href="route('stadion.index')" :active="request()->routeIs('stadion.index')">
+                {{-- Dashboard Link --}}
+                <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    {{ __('Dashboard') }}
+                </x-nav-link>
+
+                <x-nav-link :href="route('stadion.index')" :active="request()->routeIs('stadion.*')">
                     {{ __('Stadion & Fasilitas') }}
                 </x-nav-link>
-                <x-nav-link :href="route('user.index')" :active="request()->routeIs('user.index')">
+                
+                <x-nav-link :href="route('user.index')" :active="request()->routeIs('user.*')">
                     {{ __('User') }}
                 </x-nav-link>
-                <x-nav-link :href="route('penyewaan-stadion.index')" :active="request()->routeIs('penyewaan-stadion.index')">
+                
+                <x-nav-link :href="route('penyewaan-stadion.index')" :active="request()->routeIs('penyewaan-stadion.*')">
                     {{ __('Daftar Penyewa') }}
                 </x-nav-link>
-                <x-nav-link :href="route('harga-sewa.index')" :active="request()->routeIs('harga-sewa.index')">
+                
+                <x-nav-link :href="route('harga-sewa.index')" :active="request()->routeIs('harga-sewa.*')">
                     {{ __('Harga Sewa') }}
                 </x-nav-link>
             </div>
         </div>
 
-        <!-- Right Side (User + Theme) -->
         <div class="flex items-center space-x-4">
-            <!-- Theme Toggle -->
             <button id="theme-toggle" type="button"
                 class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
                 <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor"
@@ -43,7 +48,6 @@
                 </svg>
             </button>
 
-            <!-- User Dropdown -->
             <div class="relative">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -73,7 +77,6 @@
                 </x-dropdown>
             </div>
 
-            <!-- Hamburger -->
             <div class="flex items-center md:hidden">
                 <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -85,24 +88,25 @@
         </div>
     </div>
 
-    <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden md:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('stadion.index')" :active="request()->routeIs('stadion.index')">
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('stadion.index')" :active="request()->routeIs('stadion.*')">
                 {{ __('Stadion & Fasilitas') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('user.index')" :active="request()->routeIs('user.index')">
+            <x-responsive-nav-link :href="route('user.index')" :active="request()->routeIs('user.*')">
                 {{ __('User') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('penyewaan-stadion.index')" :active="request()->routeIs('penyewaan-stadion.index')">
+            <x-responsive-nav-link :href="route('penyewaan-stadion.index')" :active="request()->routeIs('penyewaan-stadion.*')">
                 {{ __('Daftar Penyewa') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('harga-sewa.index')" :active="request()->routeIs('harga-sewa.index')">
+            <x-responsive-nav-link :href="route('harga-sewa.index')" :active="request()->routeIs('harga-sewa.*')">
                 {{ __('Harga Sewa') }}
             </x-responsive-nav-link>
         </div>
 
-        <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>
@@ -126,13 +130,12 @@
     </div>
 </nav>
 
-<!-- Tambahkan skrip toggle tema -->
 <script>
+    // Logic toggle theme
     const themeToggleBtn = document.getElementById('theme-toggle');
     const darkIcon = document.getElementById('theme-toggle-dark-icon');
     const lightIcon = document.getElementById('theme-toggle-light-icon');
 
-    // Inisialisasi ikon berdasarkan mode awal
     if (localStorage.getItem('color-theme') === 'dark' || 
         (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark');
@@ -142,7 +145,6 @@
         darkIcon.classList.remove('hidden');
     }
 
-    // Toggle theme
     themeToggleBtn.addEventListener('click', function () {
         darkIcon.classList.toggle('hidden');
         lightIcon.classList.toggle('hidden');

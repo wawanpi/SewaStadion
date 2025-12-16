@@ -7,14 +7,11 @@
 
     <title>{{ config('app.name', 'Sewa Stadion') }}</title>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- Styles & Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- Dark Mode Script -->
     <script>
         if (localStorage.getItem('color-theme') === 'dark' || 
             (!('color-theme' in localStorage) && 
@@ -27,31 +24,48 @@
 </head>
 <body class="font-sans antialiased bg-gray-100 dark:bg-gray-900 min-h-screen">
 
-    {{-- Navbar berdasarkan role --}}
-        @auth
-            @if(Auth::user()->role === 'admin')
-                @include('layouts.navigationAdmin')
-            @else
-                @include('layouts.navigationUser')
-            @endif
+    {{-- LOGIKA NAVIGASI --}}
+    @auth
+        {{-- Jika User Login --}}
+        
+        {{-- 1. Cek Admin (Sesuaikan logika 'is_admin' atau 'role' dengan database Anda) --}}
+        @if(Auth::user()->is_admin == 1 || Auth::user()->role === 'admin')
+            @include('layouts.navigationAdmin')
+        
+        {{-- 2. Jika User Biasa --}}
         @else
-            @include('layouts.navigationGuest') {{-- Untuk pengunjung --}}
-        @endauth
-    {{-- Page Content --}}
-    <main>
+            {{-- Cek apakah file 'navigationUser' ada, jika tidak pakai 'navigation' biasa --}}
+            @if(view()->exists('layouts.navigationUser'))
+                @include('layouts.navigationUser')
+            @elseif(view()->exists('layouts.navigation'))
+                @include('layouts.navigation')
+            @else
+                <div class="p-4 bg-red-500 text-white">Error: File navigasi user tidak ditemukan!</div>
+            @endif
+        @endif
+
+    @else
+        {{-- Jika Pengunjung (Belum Login) --}}
+        @if(view()->exists('layouts.navigationGuest'))
+            @include('layouts.navigationGuest')
+        @elseif(view()->exists('layouts.navigation'))
+            @include('layouts.navigation')
+        @endif
+    @endauth
+
+    {{-- PAGE CONTENT --}}
+    {{-- Tambahkan padding top (pt-20) agar konten tidak tertutup navbar fixed --}}
+    <main class="pt-20">
         @yield('content')
+        {{ $slot ?? '' }}
     </main>
 
-    {{-- Optional Footer --}}
-    {{-- @include('layouts.footer') --}}
-
-    {{-- External Scripts --}}
-    <script src="{{ asset('js/main.js') }}"></script>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    {{-- SCRIPTS --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.js"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
+    
     @include('sweetalert::alert')
 </body>
 </html>
