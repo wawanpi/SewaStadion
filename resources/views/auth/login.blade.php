@@ -1,74 +1,153 @@
-<x-guest-layout>
-    <section class="bg-light dark:bg-dark pt-28 pb-20 min-h-screen flex items-center justify-center">
-        <div class="w-full max-w-md">
-            <!-- Logo & Title -->
-            <div class="text-center mb-6">
-                <!-- Logo -->
-                <img src="{{ asset('storage/image/logo.jpg') }}" class="mx-auto h-16 w-16 rounded-full mb-2" alt="Logo Dikpora">
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login - {{ config('app.name', 'Dikpora Bantul') }}</title>
+    
+    {{-- Memuat Font Poppins dari Google Fonts --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        /* Mengatur font default body ke Poppins */
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body class="antialiased bg-white dark:bg-gray-900">
+
+    {{-- Container Utama: Full Screen Flex --}}
+    <div class="min-h-screen w-full flex overflow-hidden">
+
+        {{-- BAGIAN KIRI: Artistik & Dekoratif (Hidden di Mobile) --}}
+        <div class="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-yellow-50 via-green-500 to-green-800 items-center justify-center overflow-hidden">
+            
+            {{-- Dekorasi Shape Abstrak (Lingkaran Cahaya) --}}
+            <div class="absolute top-0 left-0 w-[500px] h-[500px] bg-white/20 rounded-full blur-3xl -translate-x-1/3 -translate-y-1/3 mix-blend-overlay"></div>
+            <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-yellow-400/20 rounded-full blur-3xl translate-x-1/4 translate-y-1/4 mix-blend-color-dodge"></div>
+            
+            {{-- Konten Tengah Kiri --}}
+            <div class="relative z-10 text-center px-10">
+                {{-- Logo Besar dengan Efek Glow --}}
+                <div class="relative w-36 h-36 mx-auto mb-8 group">
+                    <div class="absolute inset-0 bg-white/50 rounded-full blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+                    <div class="relative w-full h-full bg-white rounded-full flex items-center justify-center shadow-2xl transform transition-transform duration-500 group-hover:scale-105">
+                         <img src="{{ asset('storage/image/logo.jpg') }}" class="w-28 h-28 object-contain rounded-full" alt="Logo Dikpora">
+                    </div>
+                </div>
                 
-                <!-- Title -->
-                <a href="#" class="flex items-center justify-center text-2xl font-semibold text-gray-900 dark:text-white">
-                    Dikpora Bantul
-                </a>
+                <h2 class="text-5xl font-extrabold text-white mb-4 drop-shadow-md tracking-tight leading-tight">
+                    Selamat Datang
+                </h2>
+                <div class="h-1.5 w-24 bg-yellow-400 mx-auto rounded-full mb-6 shadow-lg"></div>
+                <p class="text-white/95 text-xl font-semibold tracking-wide uppercase">
+                    
+                </p>
+                <p class="text-green-50 text-base font-light mt-4 max-w-sm mx-auto leading-relaxed opacity-90">
+                    Masuk untuk mengakses layanan pemesanan fasilitas olahraga dan informasi kegiatan terbaru.
+                </p>
             </div>
 
-            <div class="w-full bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700">
-                <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-                    <!-- Status Session -->
-                    <x-auth-session-status class="mb-4 text-sm text-green-600 dark:text-green-400" :status="session('status')" />
-
-                    <!-- Form Login -->
-                    <form method="POST" action="{{ route('login') }}" class="space-y-4">
-                        @csrf
-
-                        <!-- Email -->
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                            <input type="email" name="email" id="email" value="{{ old('email') }}"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-amber-600 focus:border-amber-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                required autofocus autocomplete="username">
-                            <x-input-error :messages="$errors->get('email')" class="mt-2 text-xs text-red-600 dark:text-red-400" />
-                        </div>
-
-                        <!-- Password -->
-                        <div>
-                            <label for="password" class="block text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                            <input type="password" name="password" id="password"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-amber-600 focus:border-amber-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                required autocomplete="current-password">
-                            <x-input-error :messages="$errors->get('password')" class="mt-2 text-xs text-red-600 dark:text-red-400" />
-                        </div>
-
-                        <!-- Remember & Forgot -->
-                        <div class="flex items-center justify-between">
-                            <label for="remember_me" class="flex items-center">
-                                <input id="remember_me" type="checkbox"
-                                    class="rounded border-gray-300 text-amber-600 shadow-sm focus:ring-amber-500 dark:bg-gray-700 dark:border-gray-600"
-                                    name="remember">
-                                <span class="ml-2 text-sm text-gray-600 dark:text-gray-300">Ingatkan saya</span>
-                            </label>
-
-                            @if (Route::has('password.request'))
-                                <a href="{{ route('password.request') }}"
-                                    class="text-sm text-amber-600 hover:underline dark:text-amber-400">Lupa password?</a>
-                            @endif
-                        </div>
-
-                        <!-- Submit -->
-                        <button type="submit"
-                            class="w-full text-white bg-third hover:bg-four font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors duration-300">
-                            Masuk
-                        </button>
-
-                        <!-- Daftar -->
-                        <p class="text-sm font-light text-gray-500 dark:text-gray-400 text-center">
-                            Belum punya akun?
-                            <a href="{{ route('register') }}"
-                                class="font-medium text-third hover:underline dark:text-second">Daftar disini</a>
-                        </p>
-                    </form>
-                </div>
+            {{-- Wave Decoration Abstrak (Layered & Curved) --}}
+            <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none rotate-180 pointer-events-none">
+                <svg class="relative block w-[calc(100%+1.3px)] h-[150px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                    <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="#FFFFFF" fill-opacity="0.1"></path>
+                    <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" fill="#FFFFFF" fill-opacity="0.2"></path>
+                    <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="#FFFFFF" fill-opacity="0.3"></path>
+                </svg>
             </div>
         </div>
-    </section>
-</x-guest-layout>
+
+        {{-- BAGIAN KANAN: Form Login Clean --}}
+        <div class="w-full lg:w-1/2 flex items-center justify-center bg-white dark:bg-gray-900 px-6 py-12 lg:px-20 relative">
+            
+            {{-- Tombol Kembali --}}
+            <a href="/" class="absolute top-8 right-8 text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition transform hover:scale-110">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </a>
+
+            <div class="w-full max-w-[450px] space-y-9">
+                {{-- Header Mobile Only --}}
+                <div class="text-center lg:text-left">
+                    <img src="{{ asset('storage/image/logo.jpg') }}" class="h-20 w-20 mx-auto lg:hidden rounded-full mb-6 shadow-lg object-cover" alt="Logo">
+                    <h2 class="text-4xl font-bold text-gray-800 dark:text-white tracking-tight mb-2">Sign In</h2>
+                    <p class="text-base text-gray-500 dark:text-gray-400 font-normal">
+                        Masuk ke akun Anda untuk melanjutkan akses.
+                    </p>
+                </div>
+
+                <x-auth-session-status class="mb-4" :status="session('status')" />
+
+                <form method="POST" action="{{ route('login') }}" class="space-y-6">
+                    @csrf
+
+                    <div class="space-y-2">
+                        <label for="email" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">Email Address</label>
+                        <div class="relative">
+                            <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus 
+                                class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:focus:ring-green-600 text-sm font-medium placeholder-gray-400 shadow-sm outline-none"
+                                placeholder="nama@email.com">
+                        </div>
+                        <x-input-error :messages="$errors->get('email')" class="mt-2 text-xs text-red-500 font-medium" />
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label for="password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">Password</label>
+                        </div>
+                        <input id="password" type="password" name="password" required autocomplete="current-password"
+                            class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:focus:ring-green-600 text-sm font-medium placeholder-gray-400 shadow-sm outline-none tracking-widest"
+                            placeholder="••••••••">
+                        <x-input-error :messages="$errors->get('password')" class="mt-2 text-xs text-red-500 font-medium" />
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2">
+                        <div class="flex items-center">
+                            <input id="remember_me" type="checkbox" name="remember" 
+                                class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded cursor-pointer transition-colors duration-200">
+                            <label for="remember_me" class="ml-2 block text-sm text-gray-600 dark:text-gray-400 cursor-pointer select-none font-medium">
+                                Ingat saya
+                            </label>
+                        </div>
+                        @if (Route::has('password.request'))
+                            <a href="{{ route('password.request') }}" class="text-sm font-semibold text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-colors duration-200">
+                                Lupa Password?
+                            </a>
+                        @endif
+                    </div>
+
+                    <button type="submit" 
+                        class="w-full flex items-center justify-center py-4 px-6 border border-transparent rounded-xl shadow-lg shadow-green-500/30 text-sm font-bold text-white bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-4 focus:ring-green-500/50 transform hover:-translate-y-0.5 transition-all duration-300 tracking-wide uppercase">
+                        CONTINUE
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 animate-pulse" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    
+                    <div class="relative flex py-6 items-center">
+                        <div class="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
+                        <span class="flex-shrink-0 mx-4 text-gray-400 text-xs uppercase tracking-widest font-bold">Or connect with</span>
+                        <div class="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
+                    </div>
+                    <div class="text-center mt-8">
+                        <p class="text-sm text-gray-600 dark:text-gray-400 font-medium">
+                            Belum punya akun? 
+                            <a href="{{ route('register') }}" class="font-bold text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-colors duration-200 ml-1">
+                                Daftar disini
+                            </a>
+                        </p>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
