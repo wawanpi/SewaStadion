@@ -1,269 +1,178 @@
 @extends('layouts.app')
-<!-- Hero Section - Matching Welcome Page Style -->
-<section class="bg-light dark:bg-dark pt-10">
-    <div class="container">
-        <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
-            <div class="mr-auto place-self-center lg:col-span-7">
-                <h1
-                    class="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white">
-                    PLATFORM RESMI PEMESANAN STADION SULTAN AGUNG & FASILITAS STADION
+
+@section('content')
+<section class="relative bg-amber-50 dark:bg-gray-900 pt-28 pb-32 overflow-hidden">
+    {{-- Decorative Blobs --}}
+    <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-amber-200 rounded-full blur-3xl opacity-30 dark:opacity-10 pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-red-100 rounded-full blur-3xl opacity-30 dark:opacity-5 pointer-events-none"></div>
+    
+    <div class="container relative z-10 px-4 mx-auto max-w-screen-xl">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            {{-- Text Content --}}
+            <div class="lg:col-span-7">
+                <span class="inline-block py-1 px-3 rounded-full bg-white dark:bg-gray-800 text-amber-700 dark:text-amber-400 text-xs font-bold tracking-widest uppercase mb-6 shadow-sm border border-amber-100 dark:border-gray-700">
+                    Official Platform
+                </span>
+                <h1 class="text-4xl md:text-5xl xl:text-6xl font-black tracking-tight text-gray-900 dark:text-white leading-[1.1] mb-6">
+                    Pemesanan <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-red-600">Stadion Sultan Agung</span> & Fasilitas Resmi
                 </h1>
-                <p class="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
-                    Temukan, pesan, dan nikmati pengalaman bermain di stadion olahraga terbaik
+                <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-8 max-w-xl border-l-4 border-amber-500 pl-4">
+                    Temukan jadwal, pesan lapangan, dan nikmati pengalaman olahraga terbaik dengan layanan terpercaya dari Pemerintah Kabupaten Bantul.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4">
-                    </a>
-                    <a href="#venue-list"
-                        class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
-                        Jelajahi Sekarang
+                
+                <div class="flex flex-wrap gap-4">
+                    <a href="#venue-list" class="px-8 py-4 text-base font-bold text-white bg-gradient-to-r from-red-700 to-red-600 rounded-xl hover:from-red-800 hover:to-red-700 transition-all shadow-lg hover:shadow-red-500/30 hover:-translate-y-1">
+                        Jelajahi Fasilitas
                     </a>
                 </div>
             </div>
-            <div class="lg:mt-0 lg:col-span-5 lg:flex">
-                <img src="storage/image/stadiun.jpg" alt="mockup" class="rounded-lg shadow-md mx-auto">
+
+            {{-- Hero Image --}}
+            <div class="lg:col-span-5 relative group">
+                <div class="absolute inset-0 bg-amber-600 rounded-2xl transform rotate-3 opacity-10 group-hover:rotate-6 transition-transform duration-500"></div>
+                <img src="storage/image/stadiun.jpg" alt="Stadion Sultan Agung" class="relative rounded-2xl shadow-2xl w-full object-cover border-4 border-white dark:border-gray-700 transform transition group-hover:-translate-y-2 duration-500 aspect-video">
             </div>
         </div>
     </div>
 </section>
 
-<!-- Search Section - Simplified Design -->
-<section class="bg-light dark:bg-dark py-10">
-    <div class="container">
-        <div class="max-w-screen-md mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+<section class="relative -mt-16 z-20 px-4">
+    <div class="container max-w-screen-lg mx-auto">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-100 dark:border-gray-700 backdrop-blur-sm">
             <form method="GET" action="{{ route('dashboard') }}">
-                <div class="flex">
+                <div class="flex flex-col md:flex-row gap-4">
                     <div class="relative w-full">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
                         <input type="text" name="search" value="{{ request('search') }}"
-                            placeholder="Cari nama fasilitas..."
-                            class="block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        <button type="submit"
-                            class="absolute top-0 right-0 p-4 text-sm font-medium text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                        </button>
+                            placeholder="Cari lapangan sepak bola, gedung serbaguna, dll..."
+                            class="block w-full pl-12 pr-4 py-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-all shadow-inner">
                     </div>
+                    <button type="submit" class="px-8 py-4 text-base font-bold text-white bg-gray-900 rounded-xl hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 dark:bg-amber-600 dark:hover:bg-amber-700 transition-all shadow-md w-full md:w-auto whitespace-nowrap">
+                        Cari Fasilitas
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </section>
 
-<!-- Venue List -->
-<section id="venue-list" class="bg-light dark:bg-dark py-10">
-    <div class="container">
+<section id="venue-list" class="bg-gray-50 dark:bg-gray-900 py-24 border-t border-gray-200 dark:border-gray-800">
+    <div class="container px-4 mx-auto max-w-screen-xl">
+        
         @if(request('search'))
-        <p class="text-sm text-gray-500 mb-8 text-center">
-            Hasil pencarian untuk: <span class="font-semibold">"{{ request('search') }}"</span>
-        </p>
+        <div class="mb-12 text-center">
+            <span class="inline-block py-2 px-4 rounded-lg bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 font-medium border border-amber-200 dark:border-amber-800 shadow-sm">
+                🔍 Hasil pencarian untuk: <span class="font-bold">"{{ request('search') }}"</span>
+            </span>
+        </div>
         @endif
 
-        <div class="text-center mb-10">
-            <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
-                STADION <span class="text-blue-600 dark:text-blue-400"> FASILITAS</span>
+        <div class="text-center mb-16 max-w-3xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-4">
+                Daftar <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-red-600">Fasilitas Tersedia</span>
             </h2>
-            <p class="text-gray-500 dark:text-gray-400">{{ $stadions->count() }} berbagai macam fasilitas tersedia di
-                platform kami</p>
+            <p class="text-gray-600 dark:text-gray-400 text-lg">
+                Menampilkan {{ $stadions->count() }} fasilitas olahraga standar nasional yang siap Anda gunakan.
+            </p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @forelse ($stadions as $stadion)
-            <div
-                class="bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 transition-transform duration-300 hover:scale-105">
-                <a href="#">
-                    <img class="rounded-t-lg h-48 w-full object-cover"
+            <div class="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col h-full hover:-translate-y-1 relative">
+                
+                {{-- Color Bar Top --}}
+                <div class="h-1.5 w-full bg-gradient-to-r from-amber-500 to-red-600"></div>
+
+                {{-- Image Container --}}
+                <div class="relative h-56 overflow-hidden bg-gray-200 dark:bg-gray-700">
+                    <img class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
                         src="{{ $stadion->foto ? asset('storage/' . $stadion->foto) : asset('images/default-venue.jpg') }}"
                         alt="{{ $stadion->nama }}" />
-                </a>
-                <div class="p-5">
-                    <a href="#">
-                        <h3 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                            {{ $stadion->nama }}</h3>
-                    </a>
-                    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400 line-clamp-2">{{ $stadion->deskripsi }}
-                    </p>
-                    <div class="flex justify-between items-center mt-4">
-                        <span
-                            class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
+                    
+                    {{-- Badge Harga --}}
+                    <div class="absolute top-4 right-4 bg-white/95 dark:bg-gray-900/90 backdrop-blur px-3 py-1.5 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700">
+                        <span class="text-sm font-bold text-gray-900 dark:text-white">
+                            Rp {{ number_format(100000, 0, ',', '.') }}
+                        </span>
+                        <span class="text-xs text-gray-500 font-medium">/jam</span>
+                    </div>
+                </div>
+
+                <div class="p-6 flex flex-col flex-grow">
+                    {{-- Lokasi Badge --}}
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-100 dark:border-amber-800">
+                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                             {{ $stadion->lokasi }}
                         </span>
-                        <span class="text-lg font-bold text-gray-900 dark:text-white">
-                            Rp {{ number_format(100000, 0, ',', '.') }}<span class="text-sm font-normal">/jam</span>
-                        </span>
                     </div>
-                    <a href="{{ route('penyewaan-stadion.create', ['stadion_id' => $stadion->id]) }}"
-                        class="inline-flex items-center px-3 py-2 mt-4 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+
+                    <a href="#">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-amber-600 transition-colors line-clamp-1">
+                            {{ $stadion->nama }}
+                        </h3>
+                    </a>
+                    
+                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-6 line-clamp-2 leading-relaxed flex-grow">
+                        {{ $stadion->deskripsi }}
+                    </p>
+
+                    <a href="{{ route('penyewaan-stadion.create', ['stadion_id' => $stadion->id]) }}" class="mt-auto block w-full py-3 px-4 bg-gray-900 hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 text-white font-bold text-center rounded-xl transition-all shadow-md hover:shadow-lg transform active:scale-95 text-sm">
                         Booking Sekarang
-                        <svg class="w-3.5 h-3.5 ml-2" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                                clip-rule="evenodd"></path>
-                        </svg>
                     </a>
                 </div>
             </div>
             @empty
-            <div class="col-span-3 text-center py-16">
-                <div class="max-w-md mx-auto">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 mx-auto text-gray-300" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                            d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <h3 class="mt-6 text-2xl font-medium text-gray-700 dark:text-white">Belum ada venue tersedia</h3>
-                    <p class="mt-2 text-gray-500 dark:text-gray-400">Silakan coba dengan kriteria pencarian yang berbeda
-                        atau coba lagi nanti.</p>
-                    <a href="{{ route('stadion.index') }}"
-                        class="inline-flex items-center px-4 py-2 mt-6 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                        Refresh Halaman
-                    </a>
+            <div class="col-span-1 md:col-span-2 lg:col-span-3 py-16 text-center">
+                <div class="inline-block p-6 rounded-full bg-white dark:bg-gray-800 mb-6 shadow-sm border border-gray-100 dark:border-gray-700">
+                    <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Fasilitas Tidak Ditemukan</h3>
+                <p class="text-gray-500 dark:text-gray-400 mb-8">Maaf, kami tidak dapat menemukan fasilitas dengan kata kunci tersebut.</p>
+                <a href="{{ route('stadion.index') }}" class="px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg transition-colors shadow-lg">
+                    Reset Pencarian
+                </a>
             </div>
             @endforelse
         </div>
 
-        <div class="mt-10">
+        <div class="mt-16">
             {{ $stadions->links() }}
         </div>
     </div>
 </section>
 
-<!-- Features Section - Like Welcome Page -->
-<section class="bg-light dark:bg-dark py-16">
-    <div class="container">
-        <div class="text-center mb-12">
-            <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">KEUNGGULAN KAMI</h2>
+<section class="bg-white dark:bg-gray-800 py-24 border-t border-gray-100 dark:border-gray-700">
+    <div class="container px-4 mx-auto max-w-screen-xl">
+        <div class="text-center mb-16">
+            <span class="text-amber-600 font-bold tracking-wider uppercase text-sm mb-2 block">Kenapa Memilih Kami?</span>
+            <h2 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white">Keunggulan Layanan Dikpora</h2>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div
-                class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center border border-gray-200 dark:border-gray-700 transition hover:-translate-y-2 duration-300">
-                <div
-                    class="mx-auto w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mb-4">
-                    <svg class="w-8 h-8 text-blue-600 dark:text-blue-300" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            @php
+                $features = [
+                    ['title' => 'Terpercaya', 'desc' => 'Platform resmi pemerintah daerah Bantul.', 'icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', 'color' => 'amber'],
+                    ['title' => 'Cepat & Mudah', 'desc' => 'Proses booking online hitungan menit.', 'icon' => 'M13 10V3L4 14h7v7l9-11h-7z', 'color' => 'red'],
+                    ['title' => 'Pembayaran Aman', 'desc' => 'Transaksi transparan dan terekam sistem.', 'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', 'color' => 'emerald'],
+                    ['title' => 'Layanan Prima', 'desc' => 'Dukungan teknis siap membantu Anda.', 'icon' => 'M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z', 'color' => 'blue'],
+                ];
+            @endphp
+
+            @foreach($features as $f)
+            <div class="group p-8 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-{{ $f['color'] }}-200 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 text-center">
+                <div class="mx-auto w-14 h-14 bg-white dark:bg-gray-800 rounded-xl shadow-sm flex items-center justify-center mb-6 group-hover:bg-{{ $f['color'] }}-50 transition-colors">
+                    <svg class="w-7 h-7 text-{{ $f['color'] }}-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $f['icon'] }}"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold dark:text-white">Terpercaya</h3>
-                <p class="text-gray-500 dark:text-gray-400 mt-2">Platform resmi Dikpora Bantul </p>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{{ $f['title'] }}</h3>
+                <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">{{ $f['desc'] }}</p>
             </div>
-            <div
-                class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center border border-gray-200 dark:border-gray-700 transition hover:-translate-y-2 duration-300">
-                <div
-                    class="mx-auto w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mb-4">
-                    <svg class="w-8 h-8 text-green-600 dark:text-green-300" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-bold dark:text-white">Cepat</h3>
-                <p class="text-gray-500 dark:text-gray-400 mt-2">Proses booking yang cepat dan mudah</p>
-            </div>
-            <div
-                class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center border border-gray-200 dark:border-gray-700 transition hover:-translate-y-2 duration-300">
-                <div
-                    class="mx-auto w-16 h-16 bg-amber-100 dark:bg-amber-900 rounded-full flex items-center justify-center mb-4">
-                    <svg class="w-8 h-8 text-amber-600 dark:text-amber-300" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
-                        </path>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-bold dark:text-white">Aman</h3>
-                <p class="text-gray-500 dark:text-gray-400 mt-2">Pembayaran aman dengan berbagai metode</p>
-            </div>
-            <div
-                class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center border border-gray-200 dark:border-gray-700 transition hover:-translate-y-2 duration-300">
-                <div
-                    class="mx-auto w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mb-4">
-                    <svg class="w-8 h-8 text-purple-600 dark:text-purple-300" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                        </path>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-bold dark:text-white">Support</h3>
-                <p class="text-gray-500 dark:text-gray-400 mt-2">Customer service siap membantu </p>
-            </div>
+            @endforeach
         </div>
     </div>
 </section>
-
-<footer class="bg-gray-900 text-gray-400">
-    <div class="container px-6 py-12 mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <!-- Logo dan Deskripsi -->
-            <div class="md:col-span-2">
-                <div class="flex items-center mb-6">
-                    <x-application-logo class="h-10 w-auto text-white" />
-                    <span class="ml-3 text-2xl font-bold text-white">Dikpora Bantul</span>
-                </div>
-                <p class="mb-6">
-                    Platform Booking lapangan Stadion Sultan Agung Dan Fasilitasnya.
-                </p>
-
-                <!-- Sosial Media -->
-                <div class="flex space-x-6 mt-4">
-                    <!-- Instagram -->
-                    <a href="https://www.instagram.com/pemkabbantul/" target="_blank" aria-label="Instagram"
-                        class="text-gray-400 hover:text-white transition duration-300">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M7.75 2A5.75 5.75 0 002 7.75v8.5A5.75 5.75 0 007.75 22h8.5A5.75 5.75 0 0022 16.25v-8.5A5.75 5.75 0 0016.25 2h-8.5zM12 8.75a3.25 3.25 0 110 6.5 3.25 3.25 0 010-6.5zM17 6.75a.75.75 0 110 1.5.75.75 0 010-1.5zM12 10.25a1.75 1.75 0 100 3.5 1.75 1.75 0 000-3.5z" />
-                        </svg>
-                    </a>
-
-                    <!-- Email -->
-                    <a href="mailto:publikasi@bantulkab.go.id" aria-label="Email"
-                        class="text-gray-400 hover:text-white transition duration-300">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                            </path>
-                        </svg>
-                    </a>
-
-                    <!-- Facebook -->
-                    <a href="https://web.facebook.com/pemkabbantul/?locale=id_ID&_rdc=1&_rdr#" target="_blank" aria-label="Facebook"
-                        class="text-gray-400 hover:text-white transition duration-300">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M22 12a10 10 0 10-11.5 9.95v-7.05h-2.4v-2.9h2.4V9.9c0-2.4 1.43-3.74 3.63-3.74 1.05 0 2.14.18 2.14.18v2.35h-1.2c-1.18 0-1.55.74-1.55 1.5v1.8h2.64l-.42 2.9h-2.22V22A10 10 0 0022 12z" />
-                        </svg>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Perusahaan -->
-            <div>
-                <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">Dikpora Bantul</h3>
-                <ul class="space-y-2">
-                    <li><a href="https://bantulkab.go.id/" class="hover:text-white">Blog</a></li>
-                </ul>
-            </div>
-
-            <!-- Bantuan -->
-            <div>
-                <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">Bantuan</h3>
-                <ul class="space-y-2">
-                    <li><a href="#" class="hover:text-white">customer service</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Copyright -->
-        <div class="mt-12 pt-8 border-t border-gray-800 text-center">
-            <p class="text-sm">&copy; {{ date('Y') }} Dikpora Bantul. All rights reserved.</p>
-        </div>
-    </div>
-</footer>
-
-
-@section('content')
 @endsection

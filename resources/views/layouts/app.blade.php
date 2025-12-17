@@ -22,19 +22,23 @@
         }
     </script>
 </head>
-<body class="font-sans antialiased bg-gray-100 dark:bg-gray-900 min-h-screen">
+{{-- 
+    Perubahan: 
+    Ditambahkan 'flex flex-col' agar layout bisa diatur tinggi penuhnya.
+--}}
+<body class="font-sans antialiased bg-gray-100 dark:bg-gray-900 min-h-screen flex flex-col">
 
     {{-- LOGIKA NAVIGASI --}}
     @auth
         {{-- Jika User Login --}}
         
-        {{-- 1. Cek Admin (Sesuaikan logika 'is_admin' atau 'role' dengan database Anda) --}}
+        {{-- 1. Cek Admin --}}
         @if(Auth::user()->is_admin == 1 || Auth::user()->role === 'admin')
             @include('layouts.navigationAdmin')
         
         {{-- 2. Jika User Biasa --}}
         @else
-            {{-- Cek apakah file 'navigationUser' ada, jika tidak pakai 'navigation' biasa --}}
+            {{-- Cek apakah file 'navigationUser' ada --}}
             @if(view()->exists('layouts.navigationUser'))
                 @include('layouts.navigationUser')
             @elseif(view()->exists('layouts.navigation'))
@@ -54,11 +58,19 @@
     @endauth
 
     {{-- PAGE CONTENT --}}
-    {{-- Tambahkan padding top (pt-20) agar konten tidak tertutup navbar fixed --}}
-    <main class="pt-20">
+    {{-- 
+        Perubahan: 
+        Ditambahkan 'flex-grow' agar konten mendorong footer ke bawah 
+        jika isinya sedikit.
+    --}}
+    <main class="pt-20 flex-grow">
         @yield('content')
         {{ $slot ?? '' }}
     </main>
+
+    {{-- FOOTER SECTION --}}
+    {{-- Ini akan memuat file resources/views/layouts/footer.blade.php --}}
+    @include('layouts.footer')
 
     {{-- SCRIPTS --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
