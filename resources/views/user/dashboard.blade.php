@@ -93,10 +93,10 @@
                     
                     {{-- Badge Harga --}}
                     <div class="absolute top-4 right-4 bg-white/95 dark:bg-gray-900/90 backdrop-blur px-3 py-1.5 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700">
-                        <span class="text-sm font-bold text-gray-900 dark:text-white">
+                        <!-- <span class="text-sm font-bold text-gray-900 dark:text-white">
                             Rp {{ number_format(100000, 0, ',', '.') }}
                         </span>
-                        <span class="text-xs text-gray-500 font-medium">/jam</span>
+                        <span class="text-xs text-gray-500 font-medium">/jam</span> -->
                     </div>
                 </div>
 

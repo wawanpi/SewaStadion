@@ -117,9 +117,9 @@
                             </label>
                         </div>
                         @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" class="text-sm font-semibold text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-colors duration-200">
+                            <!-- <a href="{{ route('password.request') }}" class="text-sm font-semibold text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-colors duration-200">
                                 Lupa Password?
-                            </a>
+                            </a> -->
                         @endif
                     </div>
 
